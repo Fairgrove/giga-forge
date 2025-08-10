@@ -1,0 +1,40 @@
+{
+    "caps": [
+        {
+            "name": "ITEM_MOD_EXPERTISE_RATING",
+            "init": 0,
+            "target": 2550
+        },
+        {
+            "name": "ITEM_MOD_HIT_RATING",
+            "init": 0,
+            "target": 2550
+        }
+    ],
+    "stat_weights": {
+        "ITEM_MOD_EXPERTISE_RATING": 0,
+        "ITEM_MOD_HIT_RATING": 0,
+        "ITEM_MOD_CRIT_RATING": 0,
+        "ITEM_MOD_HASTE_RATING": 0,
+        "ITEM_MOD_MASTERY_RATING_SHORT": 200,
+        "ITEM_MOD_DODGE_RATING": 150,
+        "ITEM_MOD_PARRY_RATING": 150,
+        "ITEM_MOD_SPIRIT_SHORT": 0,
+        "ITEM_MOD_INTELLECT_SHORT": 0,
+        "ITEM_MOD_AGILITY_SHORT": 0,
+        "ITEM_MOD_STRENGTH_SHORT": 100,
+        "ITEM_MOD_STAMINA_SHORT": 100,
+        "power": 0,
+        "resilience": 0
+    },
+    "stat_prio": [
+        "ITEM_MOD_MASTERY_RATING_SHORT",
+        "ITEM_MOD_STAMINA_SHORT",
+        "ITEM_MOD_PARRY_RATING",
+        "ITEM_MOD_DODGE_RATING"
+    ],
+    "stat_eq":[
+        {"ITEM_MOD_PARRY_RATING": ["ITEM_MOD_PARRY_RATING", "ITEM_MOD_DODGE_RATING"]},
+        {"ITEM_MOD_HIT_RATING": ["ITEM_MOD_HIT_RATING", "ITEM_MOD_EXPERTISE_RATING", "ITEM_MOD_SPIRIT_SHORT"]}
+    ]
+}

@@ -1,0 +1,10 @@
+## Interface: 100207
+## Title: Gigaforge Import/export companion
+## Notes: Paladins are cringe and Death Knights are based
+## Author: You
+## Version: 1.0
+
+Gigaforge.xml
+Gigaforge.lua
+JSONparser.lua
+GigaforgeReforge.lua
