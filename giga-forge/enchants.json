@@ -1,0 +1,104 @@
+{
+    "cloak": {
+        "1": {
+            "name": "Enchant Cloak — Superior Critical Strike",
+            "stats": [
+                {
+                    "ITEM_MOD_CRIT_RATING": 180
+                }
+            ]
+        },
+        "2": {
+            "name": "Enchant Cloak — Superior Intellect",
+            "stats": [
+                {
+                    "ITEM_MOD_INTELLECT_SHORT": 180
+                }
+            ]
+        },
+        "3": {
+            "name": "Enchant Cloak — Accuracy",
+            "stats": [
+                {
+                    "ITEM_MOD_HIT_RATING": 180
+                }
+            ]
+        },
+        "4": {
+            "name": "Enchant Cloak — Greater Protection",
+            "stats": [
+                {
+                    "ITEM_MOD_STAMINA_SHORT": 200
+                }
+            ]
+        }
+    },
+    "hands": {
+        "1": {
+            "name": "Enchant Gloves — Greater Haste",
+            "stats": [
+                {
+                    "ITEM_MOD_HASTE_RATING": 170
+                }
+            ]
+        },
+        "2": {
+            "name": "Enchant Gloves — Superior Expertise",
+            "stats": [
+                {
+                    "ITEM_MOD_EXPERTISE_RATING": 170
+                }
+            ]
+        },
+        "3": {
+            "name": "Enchant Gloves — Super Strength",
+            "stats": [
+                {
+                    "ITEM_MOD_STRENGTH_SHORT": 170
+                }
+            ]
+        },
+        "4": {
+            "name": "Enchant Gloves — Superior Mastery",
+            "stats": [
+                {
+                    "ITEM_MOD_MASTERY_RATING_SHORT": 170
+                }
+            ]
+        }
+    },
+    "boots": {
+        "1": {
+            "name": "Enchant Boots — Greater Precision",
+            "stats": [
+                {
+                    "ITEM_MOD_HIT_RATING": 175
+                }
+            ]
+        },
+        "2": {
+            "name": "Enchant Boots — Greater Haste",
+            "stats": [
+                {
+                    "ITEM_MOD_HASTE_RATING": 175
+                }
+            ]
+        },
+        "3": {
+            "name": "Enchant Boots — Blurred Speed",
+            "stats": [
+                {
+                    "ITEM_MOD_AGILITY_SHORT": 140
+                }
+            ]
+        },
+        "4": {
+            "name": "Enchant Boots — Pandaren’s Steps",
+            "stats": [
+                {
+                    "ITEM_MOD_MASTERY_RATING_SHORT": 140
+                }
+            ]
+        }
+    }
+}
