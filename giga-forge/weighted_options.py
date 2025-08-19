@@ -11,7 +11,7 @@ unreforgable_stats = [
         'resilience',
         ]
 
-def get_items_options(items, gems, filtered_gems, caps, weights, include_gems=True):
+def get_items_options(items, gems, filtered_gems, enchants, caps, weights, include_gems=True):
     items_variations = []
     items_paths = []
 
@@ -30,7 +30,7 @@ def get_items_options(items, gems, filtered_gems, caps, weights, include_gems=Tr
 
     return items_variations, items_paths
 
-def get_item_options(item, gems, filtered_gems, caps, weights, include_gems):
+def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems):
     reforge_table = generate_reforge_table(item, caps, weights)
 
     item_options = []
@@ -195,15 +195,6 @@ def generate_item_socket_options(item, gems, filtered_gems, caps, weights):
 
     return socket_variations, socket_combinations
 
-
-def filter_stat_weights(weights):
-    result = {}
-    for weight_stat, weight_value in weights.items():
-        if weight_value > 0:
-            result[weight_stat] = weight_value
-
-    return result
-
 def unique_unordered_combinations(lists):
     seen = set()
     result = []
@@ -242,3 +233,64 @@ def normalize_weights(weights):
         k: (v / min_non_zero if v > 0 else 0.0)
         for k, v in weights.items()
     }
+
+def generate_enchant_options(enchants, caps, weights):
+
+    # template variant
+    variant = {}
+    for i, cap_stat in enumerate(caps):
+        variant[f"d{i+1}"] = 0
+    variant['score'] = 0
+
+    enchant_variations = []
+    enchants_used = []
+
+    # temp_variant = copy.deepcopy(variant)
+
+    best_enchant = copy.deepcopy(variant)
+    for enchant, enchant_data in enchants.items():
+        enchant_stats = enchant_data['stats']
+
+        cap_enchant = False
+        for i, cap_stat in enumerate(caps):
+            if cap_stat in enchant_stats:
+                cap_enchant = True
+
+
+        if cap_enchant:
+
+            continue
+
+
+
+
+
+
+
+
+
+
+
+
+    for enchant, enchant_data in enchants.items():
+        temp_variant = copy.deepcopy(variant)
+        for i, cap_stat in enumerate(caps):
+            enchant_variant[f"d{i+1}"] = 0
+
+        enchant_variant['score'] = 0
+
+        for stat, value in enchant_data['stats'].items():
+            for i, cap_stat in enumerate(caps):
+                if cap_stat['name'] == stat:
+                    enchant_variant[f"d{i+1}"] = value
+                    cap_enchant = True
+
+                enchant_variant['score'] += floor(value * weights[stat])
+
+    return enchant_variations, enchants_used
+
+def apply_sockets(item_options, socket_options):
+    return 0
+
+def apply_enchants(item_options, enchant_options):
+    return 0

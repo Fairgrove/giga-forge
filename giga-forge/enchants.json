@@ -1,5 +1,5 @@
 {
-    "cloak": {
+    "15": {
         "1": {
             "name": "Enchant Cloak — Superior Critical Strike",
             "stats": [
@@ -33,7 +33,7 @@
             ]
         }
     },
-    "hands": {
+    "10": {
         "1": {
             "name": "Enchant Gloves — Greater Haste",
             "stats": [
@@ -67,7 +67,7 @@
             ]
         }
     },
-    "boots": {
+    "8": {
         "1": {
             "name": "Enchant Boots — Greater Precision",
             "stats": [

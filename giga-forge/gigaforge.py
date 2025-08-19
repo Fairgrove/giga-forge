@@ -277,6 +277,7 @@ if __name__ == "__main__":
     items_json = character_data['items']
     stats = load_data('stat_prio.json')
     gems_json = load_data('gems.json')
+    enchants_json = load_data('enchants.json')
 
     pre_init_caps = stats['caps']
     stat_prio = stats['stat_prio']
@@ -286,13 +287,12 @@ if __name__ == "__main__":
     caps_list = [d["name"] for d in caps if "name" in d]
 
     filtered_gems = weighted_filter_gems(items_json, gems_json, caps, stat_weights)
-    options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, caps, stat_weights, include_gems=True)
+    options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, enchants_json, caps, stat_weights, include_gems=True)
 
     item_paths = sorted(item_paths, key=len, reverse=True)
 
     print('computing reforges')
     scores, codes, diagnostics = compute_reforge_core(caps, sorted(options, key=len, reverse=True))
-
 
     print('finding best combination')
     valid_scores, valid_codes = enforce_cap_targets(scores, codes, caps)
