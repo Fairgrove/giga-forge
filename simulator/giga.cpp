@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 using U64 = uint64_t;
 
-constexpr int NUM_BITS = 16; // adjust if caps can be bigger than ±32k
+constexpr int NUM_BITS = 13; // adjust if caps can be bigger than ±32k
 constexpr U64 MASK = (1ULL << NUM_BITS) - 1ULL;
 
 // ---------------- Encode/Decode ----------------
