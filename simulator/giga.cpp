@@ -2,20 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 #include <string>
-#include <tuple>
-#include <cstdint>
-#include <algorithm>
-
-#include <chrono>
-#include <iomanip>
-
+#include <limits>
 #include "json.hpp"  // nlohmann/json
 
 using json = nlohmann::json;
 using U64 = uint64_t;
 
-constexpr int NUM_BITS = 13;
+constexpr int NUM_BITS = 16; // adjust if caps can be bigger than ±32k
 constexpr U64 MASK = (1ULL << NUM_BITS) - 1ULL;
 
 // ---------------- Encode/Decode ----------------
@@ -30,7 +25,7 @@ U64 encode(const std::vector<int>& nums) {
 
 std::vector<int> decode(U64 encoded, size_t n) {
     std::vector<int> nums(n);
-    for (int i = n - 1; i >= 0; --i) {
+    for (int i = static_cast<int>(n) - 1; i >= 0; --i) {
         U64 uval = encoded & MASK;
         encoded >>= NUM_BITS;
         if (uval & (1ULL << (NUM_BITS - 1))) {
@@ -42,125 +37,159 @@ std::vector<int> decode(U64 encoded, size_t n) {
     return nums;
 }
 
-// ---------------- Load JSON ----------------
-std::vector<int> load_init_values(const std::string& filename, const std::string& key) {
-    std::ifstream f(filename);
-    if (!f.is_open()) throw std::runtime_error("Cannot open file: " + filename);
-
-    json j;
-    f >> j;
-
-    std::vector<int> init_values;
-    for (auto& cap : j) {
-        init_values.push_back(cap[key].get<int>()); // or "init" if you prefer
-    }
-    return init_values;
-}
-
-std::vector<std::vector<std::vector<int>>> load_reforge_options(const std::string& filename) {
-    std::ifstream f(filename);
-    if (!f.is_open()) throw std::runtime_error("Cannot open file: " + filename);
-
-    json j;
-    f >> j;
-
-    std::vector<std::vector<std::vector<int>>> reforge_options;
-    for (auto& item_opts : j) {
-        std::vector<std::vector<int>> options_for_item;
-        for (auto& option : item_opts) {
-            options_for_item.push_back(option.get<std::vector<int>>());
-        }
-        reforge_options.push_back(options_for_item);
-    }
-    return reforge_options;
-}
-
-// ---------------- BestResult struct ----------------
-struct BestResult {
-    std::vector<int> state;
-    int score = INT32_MIN;
-    std::string sequence;
-};
-
-// ---------------- Simulation ----------------
-BestResult compute_reforge_core(const std::vector<int>& init_values,
-                                const std::vector<std::vector<std::vector<int>>>& reforge_options)
+// ---------------- Core Function ----------------
+void compute_reforge_core(
+    const std::vector<int>& init_values,
+    const std::vector<std::vector<std::vector<int>>>& reforge_options,
+    std::unordered_map<U64, int>& out_scores,
+    std::unordered_map<U64, std::vector<int>>& out_sequences)
 {
-    const size_t num_caps = init_values.size();
-    BestResult best;
+    size_t num_caps = init_values.size();
+    size_t sequence_length = reforge_options.size();
 
-    std::vector<std::tuple<U64, int, std::string>> current_states;
-    current_states.emplace_back(encode(init_values), 0, "");
+    std::unordered_map<U64, int> scores;
+    std::unordered_map<U64, std::vector<int>> sequences;
 
-    for (const auto& item_opts : reforge_options) {
-        std::vector<std::tuple<U64, int, std::string>> new_states;
-    
-        long total_inner = current_states.size() * item_opts.size();
-        long iterations = 0;
+    U64 init_encoded_state = encode(init_values);
+    scores[init_encoded_state] = 0;
+    sequences[init_encoded_state] = std::vector<int>(sequence_length, 0); // preallocate
+                                                                          //
+    int item_num = 1;
+    int total_iterations = 0;
 
-        for (auto& [encoded_state, score, sequence] : current_states) {
+    for (size_t step = 0; step < sequence_length; ++step) {
+        const auto& item_opts = reforge_options[step];
+
+        std::unordered_map<U64, int> new_scores;
+        std::unordered_map<U64, std::vector<int>> new_sequences;
+
+        long total_inner = scores.size() * item_opts.size();
+
+        std::cout << "item_number: " << item_num << "  iterations: " << total_inner << std::endl;
+        total_iterations = total_iterations + total_inner;
+
+
+        for (const auto& [encoded_state, score] : scores) {
+            const std::vector<int>& sequence = sequences[encoded_state];
             std::vector<int> state = decode(encoded_state, num_caps);
 
             for (size_t option_idx = 0; option_idx < item_opts.size(); ++option_idx) {
                 const auto& option_data = item_opts[option_idx];
                 std::vector<int> new_state(num_caps);
 
-                for (size_t i = 0; i < num_caps; ++i) {
-                    new_state[i] = state[i] + option_data[i];
+                for (size_t cap_idx = 0; cap_idx < num_caps; ++cap_idx) {
+                    new_state[cap_idx] = state[cap_idx] + option_data[cap_idx];
                 }
 
+                U64 new_encoded_state = encode(new_state);
                 int new_score = score + option_data.back();
-                std::string new_sequence = sequence + static_cast<char>('1' + option_idx);
 
-                // Check caps
-                bool meets_caps = true;
-                for (size_t i = 0; i < num_caps; ++i) {
-                    if (new_state[i] < init_values[i]) {
-                        meets_caps = false;
-                        break;
-                    }
+                if (new_scores.find(new_encoded_state) == new_scores.end() ||
+                    new_score > new_scores[new_encoded_state])
+                {
+                    new_scores[new_encoded_state] = new_score;
+
+                    std::vector<int> new_sequence = sequence;
+                    new_sequence[step] = static_cast<int>(option_idx + 1); // 1-based
+                    new_sequences[new_encoded_state] = std::move(new_sequence);
                 }
-
-                if (meets_caps && new_score > best.score) {
-                    best.state = new_state;
-                    best.score = new_score;
-                    best.sequence = new_sequence;
-                }
-
-                U64 new_encoded = encode(new_state);
-                new_states.emplace_back(new_encoded, new_score, new_sequence);
-                iterations++;
-            }
-            //iterations = iterations + item_opts.size();
-            if (iterations % 10'000'000 == 0){
-                std::cout << iterations << " / " << total_inner << std::endl;
             }
         }
 
-        current_states = std::move(new_states);
+        scores.swap(new_scores);
+        sequences.swap(new_sequences);
+
+        item_num++;
     }
 
-    return best;
+    out_scores = std::move(scores);
+    out_sequences = std::move(sequences);
 }
 
 // ---------------- Main ----------------
 int main() {
-    try {
-        std::vector<int> init_values = load_init_values("output/caps.json", "init");
-        std::vector<int> cap_values = load_init_values("output/caps.json", "target");
-        std::vector<std::vector<std::vector<int>>> reforge_options = load_reforge_options("output/options.json");
-
-        for (int v : init_values) std::cout << v << "\n";
-
-        BestResult result = compute_reforge_core(init_values, reforge_options);
-
-        std::cout << "Best score: " << result.score << "\n";
-        std::cout << "Best sequence: " << result.sequence << "\n";
-        std::cout << "Best state: ";
-        for (int v : result.state) std::cout << v << " ";
-        std::cout << "\n";
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+    // Load caps.json
+    std::ifstream caps_file("output/caps.json");
+    if (!caps_file) {
+        std::cerr << "Error: could not open caps.json\n";
         return 1;
     }
+    json caps_json;
+    caps_file >> caps_json;
+
+    std::vector<int> init_values;
+    std::vector<int> targets;
+    for (auto& item : caps_json) {
+        init_values.push_back(item["init"].get<int>());
+        targets.push_back(item["target"].get<int>());
+    }
+
+    // Load options.json
+    std::ifstream options_file("output/options.json");
+    if (!options_file) {
+        std::cerr << "Error: could not open options.json\n";
+        return 1;
+    }
+    json options_json;
+    options_file >> options_json;
+
+    std::vector<std::vector<std::vector<int>>> reforge_options =
+        options_json.get<std::vector<std::vector<std::vector<int>>>>();
+
+    // Compute
+    std::unordered_map<U64, int> scores;
+    std::unordered_map<U64, std::vector<int>> sequences;
+    compute_reforge_core(init_values, reforge_options, scores, sequences);
+
+    // Find best score meeting target caps
+    int max_score = std::numeric_limits<int>::min();
+    std::vector<int> best_sequence;
+
+    for (const auto& [encoded_state, score] : scores) {
+        std::vector<int> state = decode(encoded_state, init_values.size());
+
+        bool meets_target = true;
+        for (size_t i = 0; i < state.size(); ++i) {
+            if (state[i] < targets[i]) {
+                meets_target = false;
+                break;
+            }
+        }
+
+        if (meets_target && score > max_score) {
+            max_score = score;
+            best_sequence = sequences[encoded_state];
+        }
+    }
+
+    if (max_score != std::numeric_limits<int>::min()) {
+        std::cout << "Max score: " << max_score << "\nSequence: ";
+        for (int opt : best_sequence) std::cout << opt << "/";
+        std::cout << "\n";
+
+        // Decode the state of the best score
+        U64 best_encoded_state = 0;
+        for (const auto& [encoded_state, score] : scores) {
+            std::vector<int> state = decode(encoded_state, init_values.size());
+            bool meets_target = true;
+            for (size_t i = 0; i < state.size(); ++i) {
+                if (state[i] < targets[i]) {
+                    meets_target = false;
+                    break;
+                }
+            }
+            if (meets_target && score == max_score) {
+                best_encoded_state = encoded_state;
+                break;
+            }
+        }
+
+        std::vector<int> best_state = decode(best_encoded_state, init_values.size());
+        std::cout << "State of best score: ";
+        for (int val : best_state) std::cout << val << " ";
+        std::cout << "\n";
+    } else {
+        std::cout << "No state meets the target values.\n";
+    }
+    return 0;
 }
