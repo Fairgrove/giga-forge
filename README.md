@@ -10,12 +10,12 @@ Put this directory in your addon folder
 cd to the gigaforge simulations dir  `giga-forge/simulator`  
 compile the thing   
 ```bash
-clang++ -std=c++17 -O2 -o giga giga.cpp
+clang++ -std=c++17 -O2 -o compute giga.cpp
 ```
 
 run it >)
 ```bash
-./giga
+./compute
 ```
 
 # Deps   
@@ -24,5 +24,7 @@ clone this amazing json reading thingy:
 ```bash
 curl -O https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp
 ```
-
+```
+pip3 install tabulate
+```
 
