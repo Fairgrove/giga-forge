@@ -185,11 +185,27 @@ int main() {
         }
 
         std::vector<int> best_state = decode(best_encoded_state, init_values.size());
+
+        // Print state
         std::cout << "State of best score: ";
         for (int val : best_state) std::cout << val << " ";
         std::cout << "\n";
+
+        // --- JSON export ---
+        json output;
+        output["score"] = max_score;
+        output["sequence"] = best_sequence;
+        output["state"] = best_state;
+
+        std::ofstream out_file("output/result.json");
+        out_file << output.dump(4); // pretty-print with 4 spaces
+        out_file.close();
+
+        std::cout << "Best result written to best_result.json\n";
+
     } else {
         std::cout << "No state meets the target values.\n";
     }
+
     return 0;
 }

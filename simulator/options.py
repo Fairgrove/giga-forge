@@ -11,28 +11,6 @@ from weighted_gem_filtering import filter_gems as weighted_filter_gems
 # from priority_options import get_items_options as priority_get_items_options
 # from priority_gem_filtering import filter_gems as priority_filter_gems
 
-slotID_translations = {
-        0: 'ammo',
-        1: 'head',
-        2: 'neck',
-        3: 'shoulder',
-        4: 'shirt',
-        5: 'chest',
-        6: 'waist',
-        7: 'legs',
-        8: 'feet',
-        9: 'wrist',
-        10: 'hands',
-        11: 'finger 1',
-        12: 'finger 2',
-        13: 'trinket 1',
-        14: 'trinket 2',
-        15: 'back',
-        16: 'main hand',
-        17: 'off hand',
-        18: 'ranged',
-        }
-
 def load_data(file_name):
     with open(file_name, 'r') as f:
         data = json.load(f)
@@ -290,19 +268,12 @@ if __name__ == "__main__":
     filtered_gems = weighted_filter_gems(items_json, gems_json, caps, stat_weights)
     options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, enchants_json, caps, stat_weights, include_gems=True)
 
+    # sorting hightest to lowest
     item_paths = sorted(item_paths, key=len, reverse=True)
     options = sorted(options, key=len, reverse=True)
 
-    print('\n\n\n\n')
-    for i in options:
-        for j in i:
-            if len(j) > 3:
-                print(j)
-        print()
-
     # --- OUTPUT ---
-    print(caps)
-    print('writing outout')
+    print('writing output')
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -313,6 +284,10 @@ if __name__ == "__main__":
     path = os.path.join(output_dir, 'caps.json')
     with open(path, 'w') as f:
         json.dump(caps, f, indent=2)
+
+    path = os.path.join(output_dir, 'paths.json')
+    with open(path, 'w') as f:
+        json.dump(item_paths, f, indent=2)
 
     exit()
 
