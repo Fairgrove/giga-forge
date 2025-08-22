@@ -23,7 +23,7 @@ def get_items_options(items, gems, filtered_gems, enchants, caps, weights, inclu
 
     for item in items:
         if len(item['stats']) > 0 and not item['locked']:
-            item_options, item_paths = get_item_options(item, gems, filtered_gems, caps, weights, include_gems)
+            item_options, item_paths = get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems)
 
             items_variations.append(item_options)
             items_paths.append(item_paths)
