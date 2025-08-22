@@ -1,4 +1,4 @@
-giga-forge/output/
-giga-forge/json.hpp
-giga-forge/giga
-giga-forge/__pycache__/
+simulator/output/
+simulator/json.hpp
+simulator/giga
+simulator/__pycache__/

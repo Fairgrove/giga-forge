@@ -6,6 +6,10 @@
 #include <tuple>
 #include <cstdint>
 #include <algorithm>
+
+#include <chrono>
+#include <iomanip>
+
 #include "json.hpp"  // nlohmann/json
 
 using json = nlohmann::json;
@@ -47,7 +51,7 @@ std::vector<int> load_init_values(const std::string& filename, const std::string
     f >> j;
 
     std::vector<int> init_values;
-    for (auto& cap : j["caps"]) {
+    for (auto& cap : j) {
         init_values.push_back(cap[key].get<int>()); // or "init" if you prefer
     }
     return init_values;
@@ -90,6 +94,9 @@ BestResult compute_reforge_core(const std::vector<int>& init_values,
 
     for (const auto& item_opts : reforge_options) {
         std::vector<std::tuple<U64, int, std::string>> new_states;
+    
+        long total_inner = current_states.size() * item_opts.size();
+        long iterations = 0;
 
         for (auto& [encoded_state, score, sequence] : current_states) {
             std::vector<int> state = decode(encoded_state, num_caps);
@@ -122,6 +129,11 @@ BestResult compute_reforge_core(const std::vector<int>& init_values,
 
                 U64 new_encoded = encode(new_state);
                 new_states.emplace_back(new_encoded, new_score, new_sequence);
+                iterations++;
+            }
+            //iterations = iterations + item_opts.size();
+            if (iterations % 10'000'000 == 0){
+                std::cout << iterations << " / " << total_inner << std::endl;
             }
         }
 
@@ -134,9 +146,11 @@ BestResult compute_reforge_core(const std::vector<int>& init_values,
 // ---------------- Main ----------------
 int main() {
     try {
-        std::vector<int> init_values = load_init_values("caps.json", "init");
-        std::vector<int> cap_values = load_init_values("caps.json", "target");
-        std::vector<std::vector<std::vector<int>>> reforge_options = load_reforge_options("options.json");
+        std::vector<int> init_values = load_init_values("output/caps.json", "init");
+        std::vector<int> cap_values = load_init_values("output/caps.json", "target");
+        std::vector<std::vector<std::vector<int>>> reforge_options = load_reforge_options("output/options.json");
+
+        for (int v : init_values) std::cout << v << "\n";
 
         BestResult result = compute_reforge_core(init_values, reforge_options);
 

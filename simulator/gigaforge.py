@@ -3,6 +3,7 @@ from tqdm import tqdm
 import time
 import json
 from itertools import product
+import os
 
 # modules
 from weighted_options import get_items_options as weighted_get_items_options
@@ -290,11 +291,33 @@ if __name__ == "__main__":
     options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, enchants_json, caps, stat_weights, include_gems=True)
 
     item_paths = sorted(item_paths, key=len, reverse=True)
+    options = sorted(options, key=len, reverse=True)
+
+    print('\n\n\n\n')
+    for i in options:
+        for j in i:
+            if len(j) > 3:
+                print(j)
+        print()
+
+    # --- OUTPUT ---
+    print(caps)
+    print('writing outout')
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    path = os.path.join(output_dir, 'options.json')
+    with open(path, 'w') as f:
+        json.dump(options, f, indent=2)
+
+    path = os.path.join(output_dir, 'caps.json')
+    with open(path, 'w') as f:
+        json.dump(caps, f, indent=2)
 
     exit()
 
     print('computing reforges')
-    scores, codes, diagnostics = compute_reforge_core(caps, sorted(options, key=len, reverse=True))
+    scores, codes, diagnostics = compute_reforge_core(caps, options)
 
     print('finding best combination')
     valid_scores, valid_codes = enforce_cap_targets(scores, codes, caps)
