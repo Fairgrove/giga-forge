@@ -4,13 +4,13 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <limits>
 #include "json.hpp"  // nlohmann/json
-
 
 using json = nlohmann::json;
 using U64 = uint64_t;
 
-constexpr int NUM_BITS = 13; // adjust if caps can be bigger than ±32k
+constexpr int NUM_BITS = 16; // adjust if caps can be bigger than ±32k
 constexpr U64 MASK = (1ULL << NUM_BITS) - 1ULL;
 
 // ---------------- Encode/Decode ----------------
@@ -38,12 +38,11 @@ std::vector<int> decode(U64 encoded, size_t n) {
 }
 
 // ---------------- Core Function ----------------
-
 void compute_reforge_core(
     const std::vector<int>& init_values,
     const std::vector<std::vector<std::vector<int>>>& reforge_options,
     std::unordered_map<U64, int>& out_scores,
-    std::unordered_map<U64, std::vector<int>>& out_sequences) 
+    std::unordered_map<U64, std::vector<int>>& out_sequences)
 {
     size_t num_caps = init_values.size();
     size_t sequence_length = reforge_options.size();
@@ -53,22 +52,22 @@ void compute_reforge_core(
 
     U64 init_encoded_state = encode(init_values);
     scores[init_encoded_state] = 0;
-    sequences[init_encoded_state] = std::vector<int>(sequence_length, 0); // initialize with zeros
-
+    sequences[init_encoded_state] = std::vector<int>(sequence_length, 0); // preallocate
+                                                                          //
     int item_num = 1;
     int total_iterations = 0;
 
-    for (size_t step = 0; step < reforge_options.size(); ++step) {
+    for (size_t step = 0; step < sequence_length; ++step) {
         const auto& item_opts = reforge_options[step];
 
         std::unordered_map<U64, int> new_scores;
         std::unordered_map<U64, std::vector<int>> new_sequences;
 
         long total_inner = scores.size() * item_opts.size();
-        long iterations = 0;
 
         std::cout << "item_number: " << item_num << "  iterations: " << total_inner << std::endl;
         total_iterations = total_iterations + total_inner;
+
 
         for (const auto& [encoded_state, score] : scores) {
             const std::vector<int>& sequence = sequences[encoded_state];
@@ -86,13 +85,12 @@ void compute_reforge_core(
                 int new_score = score + option_data.back();
 
                 if (new_scores.find(new_encoded_state) == new_scores.end() ||
-                    new_score > new_scores[new_encoded_state]) 
+                    new_score > new_scores[new_encoded_state])
                 {
                     new_scores[new_encoded_state] = new_score;
 
-                    // Copy previous sequence and set current step
                     std::vector<int> new_sequence = sequence;
-                    new_sequence[step] = static_cast<int>(option_idx + 1); // 1-based option index
+                    new_sequence[step] = static_cast<int>(option_idx + 1); // 1-based
                     new_sequences[new_encoded_state] = std::move(new_sequence);
                 }
             }
@@ -120,8 +118,10 @@ int main() {
     caps_file >> caps_json;
 
     std::vector<int> init_values;
+    std::vector<int> targets;
     for (auto& item : caps_json) {
         init_values.push_back(item["init"].get<int>());
+        targets.push_back(item["target"].get<int>());
     }
 
     // Load options.json
@@ -141,18 +141,55 @@ int main() {
     std::unordered_map<U64, std::vector<int>> sequences;
     compute_reforge_core(init_values, reforge_options, scores, sequences);
 
-    // Find best score
-    //int max_score = std::numeric_limits<int>::min();
-    //std::string best_seq;
-    //for (const auto& [state, score] : scores) {
-        //if (score > max_score) {
-            //max_score = score;
-            //best_seq = sequences[state];
-        //}
-    //}
+    // Find best score meeting target caps
+    int max_score = std::numeric_limits<int>::min();
+    std::vector<int> best_sequence;
 
-    //std::cout << "Max score: " << max_score << "\n";
-    //std::cout << "Best sequence: " << best_seq << "\n";
+    for (const auto& [encoded_state, score] : scores) {
+        std::vector<int> state = decode(encoded_state, init_values.size());
 
+        bool meets_target = true;
+        for (size_t i = 0; i < state.size(); ++i) {
+            if (state[i] < targets[i]) {
+                meets_target = false;
+                break;
+            }
+        }
+
+        if (meets_target && score > max_score) {
+            max_score = score;
+            best_sequence = sequences[encoded_state];
+        }
+    }
+
+    if (max_score != std::numeric_limits<int>::min()) {
+        std::cout << "Max score: " << max_score << "\nSequence: ";
+        for (int opt : best_sequence) std::cout << opt << "/";
+        std::cout << "\n";
+
+        // Decode the state of the best score
+        U64 best_encoded_state = 0;
+        for (const auto& [encoded_state, score] : scores) {
+            std::vector<int> state = decode(encoded_state, init_values.size());
+            bool meets_target = true;
+            for (size_t i = 0; i < state.size(); ++i) {
+                if (state[i] < targets[i]) {
+                    meets_target = false;
+                    break;
+                }
+            }
+            if (meets_target && score == max_score) {
+                best_encoded_state = encoded_state;
+                break;
+            }
+        }
+
+        std::vector<int> best_state = decode(best_encoded_state, init_values.size());
+        std::cout << "State of best score: ";
+        for (int val : best_state) std::cout << val << " ";
+        std::cout << "\n";
+    } else {
+        std::cout << "No state meets the target values.\n";
+    }
     return 0;
 }
