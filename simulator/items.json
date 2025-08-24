@@ -1,1 +1,182 @@
-{"items":[{"stats":{"ITEM_MOD_PARRY_RATING":799,"ITEM_MOD_HIT_RATING":316},"locked":false,"sockets":["blue"],"slotID":1,"bonus":[]},{"stats":{"ITEM_MOD_PARRY_RATING":638,"ITEM_MOD_HIT_RATING":323},"locked":false,"sockets":[],"slotID":2,"bonus":[]},{"stats":{"ITEM_MOD_PARRY_RATING":811,"ITEM_MOD_HIT_RATING":391},"locked":false,"sockets":["red"],"slotID":3,"bonus":[]},{"stats":{"ITEM_MOD_PARRY_RATING":610,"ITEM_MOD_HIT_RATING":716},"locked":false,"sockets":[],"slotID":5,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":529,"ITEM_MOD_MASTERY_RATING_SHORT":418},"locked":false,"sockets":["yellow","blue"],"slotID":6,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":586,"ITEM_MOD_PARRY_RATING":515},"locked":false,"sockets":["blue"],"slotID":7,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":507,"ITEM_MOD_MASTERY_RATING_SHORT":536},"locked":false,"sockets":["yellow"],"slotID":8,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":501,"ITEM_MOD_EXPERTISE_RATING":254},"locked":false,"sockets":[],"slotID":9,"bonus":[]},{"stats":{"ITEM_MOD_MASTERY_RATING_SHORT":478,"ITEM_MOD_HIT_RATING":391},"locked":false,"sockets":[],"slotID":10,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":501,"ITEM_MOD_HIT_RATING":254},"locked":false,"sockets":[],"slotID":11,"bonus":[]},{"stats":{"ITEM_MOD_PARRY_RATING":339,"ITEM_MOD_MASTERY_RATING_SHORT":326},"locked":false,"sockets":[],"slotID":12,"bonus":[]},{"stats":{"ITEM_MOD_MASTERY_RATING_SHORT":1079},"locked":false,"sockets":[],"slotID":13,"bonus":[]},{"stats":[],"locked":false,"sockets":[],"slotID":14,"bonus":[]},{"stats":{"ITEM_MOD_DODGE_RATING":349,"ITEM_MOD_PARRY_RATING":309},"locked":false,"sockets":[],"slotID":15,"bonus":[]},{"stats":{"ITEM_MOD_MASTERY_RATING_SHORT":626,"ITEM_MOD_CRIT_RATING":555},"locked":false,"sockets":[],"slotID":16,"bonus":[]},{"stats":[],"locked":false,"sockets":[],"slotID":19,"bonus":[]}],"specID":0,"race":10,"class":6}
+{
+	"items": [
+		{
+			"stats": {
+				"ITEM_MOD_CRIT_RATING": 605,
+				"ITEM_MOD_HASTE_RATING": 461
+			},
+			"locked": false,
+			"sockets": [
+				"blue"
+			],
+			"slotID": 1,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_PARRY_RATING": 638,
+				"ITEM_MOD_HIT_RATING": 323
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 2,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_PARRY_RATING": 811,
+				"ITEM_MOD_HIT_RATING": 391
+			},
+			"locked": false,
+			"sockets": [
+				"red"
+			],
+			"slotID": 3,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_PARRY_RATING": 1066,
+				"ITEM_MOD_EXPERTISE_RATING": 500
+			},
+			"locked": false,
+			"sockets": [
+				"red",
+				"blue"
+			],
+			"slotID": 5,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 529,
+				"ITEM_MOD_MASTERY_RATING_SHORT": 418
+			},
+			"locked": false,
+			"sockets": [
+				"yellow",
+				"blue",
+				"prismatic"
+			],
+			"slotID": 6,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 715,
+				"ITEM_MOD_MASTERY_RATING_SHORT": 812
+			},
+			"locked": false,
+			"sockets": [
+				"red"
+			],
+			"slotID": 7,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 507,
+				"ITEM_MOD_MASTERY_RATING_SHORT": 536
+			},
+			"locked": false,
+			"sockets": [
+				"yellow"
+			],
+			"slotID": 8,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 377,
+				"ITEM_MOD_PARRY_RATING": 377
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 9,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_HASTE_RATING": 485,
+				"ITEM_MOD_HIT_RATING": 425
+			},
+			"locked": false,
+			"sockets": [
+				"blue"
+			],
+			"slotID": 10,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_PARRY_RATING": 682,
+				"ITEM_MOD_EXPERTISE_RATING": 345
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 11,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 468,
+				"ITEM_MOD_PARRY_RATING": 353
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 12,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_MASTERY_RATING_SHORT": 1079
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 13,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_HASTE_RATING": 956
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 14,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_DODGE_RATING": 518,
+				"ITEM_MOD_MASTERY_RATING_SHORT": 345
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 15,
+			"bonus": []
+		},
+		{
+			"stats": {
+				"ITEM_MOD_CRIT_RATING": 841,
+				"ITEM_MOD_EXPERTISE_RATING": 634
+			},
+			"locked": false,
+			"sockets": [],
+			"slotID": 16,
+			"bonus": []
+		}
+	],
+	"race": 10,
+	"class": 6,
+	"stats": {
+		"ITEM_MOD_DODGE_RATING": 3227,
+		"ITEM_MOD_CRIT_RATING": 1048,
+		"ITEM_MOD_MASTERY_RATING_SHORT": 6787,
+		"ITEM_MOD_SPIRIT_SHORT": 65,
+		"ITEM_MOD_PARRY_RATING": 3992,
+		"ITEM_MOD_HASTE_RATING": 1386,
+		"ITEM_MOD_EXPERTISE_RATING": 1854,
+		"ITEM_MOD_HIT_RATING": 1623
+	},
+	"specID": 0
+}
