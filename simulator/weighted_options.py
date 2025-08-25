@@ -89,6 +89,7 @@ def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include
 
 def generate_reforge_table(item, caps, weights):
     caps_list = [d["name"] for d in caps if "name" in d]
+    item_stats = list(item['stats'].keys())
 
     result = {}
 
