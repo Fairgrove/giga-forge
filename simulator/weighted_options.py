@@ -123,7 +123,9 @@ def generate_reforge_table(item, caps, weights):
         if best_stat:
             result[stat].append(best_stat)
 
-        result[stat] += caps_list
+        for cap_stat in caps_list:
+            if not cap_stat in item_stats:
+                result[stat].append(cap_stat)
 
     return result
 
