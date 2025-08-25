@@ -33,6 +33,14 @@ def get_items_options(items, gems, filtered_gems, enchants, caps, weights, inclu
 def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems):
     reforge_table = generate_reforge_table(item, caps, weights)
 
+    # print(item['slotID'])
+    # for k, v in reforge_table.items():
+        # print(k)
+        # for j in v:
+            # print(f"   {j}")
+
+        # print()
+
     item_options = []
     item_paths = []
 
@@ -56,7 +64,9 @@ def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include
     # return item_options, item_paths
 
 def generate_reforge_table(item, caps, weights):
+    # print(item['slotID'])
     caps_list = [d["name"] for d in caps if "name" in d]
+    item_stats = list(item['stats'].keys())
 
     result = {}
 
@@ -72,7 +82,7 @@ def generate_reforge_table(item, caps, weights):
         best_val = 0
         best_stat = None
         for weight_stat, weight_value in weights.items():
-            if weight_stat in item['stats']:
+            if weight_stat in item_stats:
                 continue
 
             if weight_value == weights[stat]:
@@ -91,7 +101,9 @@ def generate_reforge_table(item, caps, weights):
         if best_stat:
             result[stat].append(best_stat)
 
-        result[stat] += caps_list
+        for cap_stat in caps_list:
+            if not cap_stat in item_stats:
+                result[stat].append(cap_stat)
 
     return result
 

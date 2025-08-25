@@ -268,6 +268,9 @@ if __name__ == "__main__":
     filtered_gems = weighted_filter_gems(items_json, gems_json, caps, stat_weights)
     options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, enchants_json, caps, stat_weights, include_gems=True)
 
+    for i in item_paths[9]:
+        print(i)
+
     # sorting hightest to lowest
     item_paths = sorted(item_paths, key=len, reverse=True)
     options = sorted(options, key=len, reverse=True)
