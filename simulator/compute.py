@@ -4,6 +4,8 @@ import time
 import os
 from tqdm import tqdm
 
+import cProfile
+
 BITS = 18 # required bits for signed 99999
 SIGN_BIT = 1 << (BITS - 1)
 MASK = (1 << BITS) - 1
@@ -69,8 +71,8 @@ def compute_reforge_core(caps, reforge_options):
                 }
 
         item_start_time = time.perf_counter()
-
         num_item_opts = len(item_opts)
+
         for key, score in scores.items():
             code = codes[key]
             state = decode_bitwise(key, num_caps)
@@ -85,10 +87,6 @@ def compute_reforge_core(caps, reforge_options):
 
                 new_key = encode_bitwise(new_state)
                 new_score = score + o[-1]
-
-                # print(f"new key: {new_key}")
-                # print(f"new score: {new_score}")
-                # print(f"new state: {new_state}")
 
                 if new_key not in newscores or new_score > newscores[new_key]:
                     newscores[new_key] = new_score
@@ -150,7 +148,6 @@ def get_best_score(valid_scores, valid_codes):
         print("No valid solutions found that meet all cap targets.")
 
         return False
-
 
 if __name__ == "__main__":
     caps = load_data('output/caps.json')
