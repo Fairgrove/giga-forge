@@ -23,7 +23,8 @@ def get_items_options(items, gems, filtered_gems, enchants, caps, weights, inclu
 
     for item in items:
         if len(item['stats']) > 0 and not item['locked']:
-            item_options, item_paths = get_item_options(item, gems, filtered_gems, enchants,  caps, weights, include_gems)
+
+            item_options, item_paths = get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems)
 
             items_variations.append(item_options)
             items_paths.append(item_paths)
@@ -32,14 +33,6 @@ def get_items_options(items, gems, filtered_gems, enchants, caps, weights, inclu
 
 def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems):
     reforge_table = generate_reforge_table(item, caps, weights)
-
-    # print(item['slotID'])
-    # for k, v in reforge_table.items():
-        # print(k)
-        # for j in v:
-            # print(f"   {j}")
-
-        # print()
 
     item_options = []
     item_paths = []
@@ -57,14 +50,12 @@ def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include
                 item_options.append(option)
                 item_paths.append(path)
 
-
     filtered_item_options, filtered_item_paths = remove_duplicate_item_variations(item_options, item_paths)
 
     return filtered_item_options, filtered_item_paths
     # return item_options, item_paths
 
 def generate_reforge_table(item, caps, weights):
-    # print(item['slotID'])
     caps_list = [d["name"] for d in caps if "name" in d]
     item_stats = list(item['stats'].keys())
 
@@ -118,6 +109,7 @@ def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
 
     item_variant = []
 
+
     caps_list = [d["name"] for d in caps if "name" in d]
     temp_item = copy.deepcopy(item)
 
@@ -130,6 +122,7 @@ def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
 
         for i, cap_stat in enumerate(caps_list):
             if src == cap_stat:
+
                 item_variant.append(new_stat * -1)
 
             elif dst == cap_stat:
@@ -152,17 +145,19 @@ def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
 def generate_item_socket_options(item, gems, filtered_gems, caps, weights, variation_options, variation_paths, include_gems):
     if not include_gems:
         return variation_options, variation_paths
-
+      
     item_sockets = []
     for color in item['sockets']:
         item_sockets.append(filtered_gems[color])
 
     if len(item_sockets) == 0:
+
         return variation_options, variation_paths
 
     socket_combinations = unique_unordered_combinations(item_sockets)
 
     socket_variations = []
+
     socket_paths = []
     for socket_combination in socket_combinations:
         socket_variant = []
@@ -175,10 +170,12 @@ def generate_item_socket_options(item, gems, filtered_gems, caps, weights, varia
         temp_item_path['gems'] = socket_combination
         socket_paths.append(temp_item_path)
 
+
         for gem in socket_combination:
             for stat, value in gems[gem]['stats'].items():
                 for i, cap_stat in enumerate(caps):
                     if cap_stat['name'] == stat:
+
                         socket_variant[i] = value + variation_options[0][i]
 
                     socket_variant[-1] += floor(value * weights[stat]) + variation_options[0][-1]
