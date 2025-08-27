@@ -23,6 +23,7 @@ def get_items_options(items, gems, filtered_gems, enchants, caps, weights, inclu
 
     for item in items:
         if len(item['stats']) > 0 and not item['locked']:
+
             item_options, item_paths = get_item_options(item, gems, filtered_gems, enchants, caps, weights, include_gems)
 
             items_variations.append(item_options)
@@ -39,48 +40,15 @@ def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include
     for src, dst_list in reforge_table.items():
         for dst in dst_list:
 
-            reforge_option = generate_item_reforge_option(item, caps, weights, src=src, dst=dst)
+            variation_options, variation_paths = generate_item_reforge_option(item, caps, weights, src=src, dst=dst)
 
-            if include_gems:
-                socket_options, used_gems = generate_item_socket_options(item, gems, filtered_gems, caps, weights)
+            variation_options, variation_paths = generate_item_socket_options(item, gems, filtered_gems, caps, weights, variation_options, variation_paths, include_gems)
 
-                if socket_options:
-                    for i, socket_option in enumerate(socket_options):
-                        item_option = {}
+            variation_options, variation_paths = generate_enchant_options(item, enchants, caps, weights, variation_options, variation_paths)
 
-                        for key, value in reforge_option.items():
-                            item_option[key] = reforge_option[key] + socket_option[key]
-
-                        item_path = {
-                                "slotID": item['slotID'],
-                                "src": src,
-                                "dst": dst,
-                                "gems": used_gems[i],
-                                }
-
-                        item_options.append(item_option)
-                        item_paths.append(item_path)
-                else:
-                    item_path = {
-                            "slotID": item['slotID'],
-                            "src": src,
-                            "dst": dst,
-                            "gems": [],
-                            }
-
-                    item_options.append(reforge_option)
-                    item_paths.append(item_path)
-
-            else:
-                item_path = {
-                    "slotID": item['slotID'],
-                    "src": src,
-                    "dst": dst,
-                    "gems": [],
-                    }
-
-                item_paths.append(item_path)
-                item_options.append(reforge_option)
+            for option, path in zip(variation_options, variation_paths):
+                item_options.append(option)
+                item_paths.append(path)
 
     filtered_item_options, filtered_item_paths = remove_duplicate_item_variations(item_options, item_paths)
 
@@ -105,7 +73,7 @@ def generate_reforge_table(item, caps, weights):
         best_val = 0
         best_stat = None
         for weight_stat, weight_value in weights.items():
-            if weight_stat in item['stats']:
+            if weight_stat in item_stats:
                 continue
 
             if weight_value == weights[stat]:
@@ -130,9 +98,17 @@ def generate_reforge_table(item, caps, weights):
 
     return result
 
-
 def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
-    item_variant = {}
+    item_path = {
+        "slotID": item['slotID'],
+        "src": src,
+        "dst": dst,
+        "gems": [],
+        "enchant": None,
+        }
+
+    item_variant = []
+
 
     caps_list = [d["name"] for d in caps if "name" in d]
     temp_item = copy.deepcopy(item)
@@ -146,57 +122,67 @@ def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
 
         for i, cap_stat in enumerate(caps_list):
             if src == cap_stat:
-                item_variant[f"d{i+1}"] = new_stat * -1
+
+                item_variant.append(new_stat * -1)
 
             elif dst == cap_stat:
-                item_variant[f"d{i+1}"] = new_stat
+                item_variant.append(new_stat)
 
             else:
-                item_variant[f"d{i+1}"] = 0
+                item_variant.append(0)
 
     else:
         for i, cap_stat in enumerate(caps):
-            item_variant[f"d{i+1}"] = 0
+            item_variant.append(0)
 
-    item_variant['score'] = 0
+    item_variant.append(0)
 
     for stat, value in temp_item['stats'].items():
-        item_variant['score'] += floor(value * weights[stat])
+        item_variant[-1] += floor(value * weights[stat])
 
-    return item_variant
+    return [item_variant], [item_path]
 
-def generate_item_socket_options(item, gems, filtered_gems, caps, weights):
-    # generate multi list of gems
+def generate_item_socket_options(item, gems, filtered_gems, caps, weights, variation_options, variation_paths, include_gems):
+    if not include_gems:
+        return variation_options, variation_paths
+      
     item_sockets = []
     for color in item['sockets']:
         item_sockets.append(filtered_gems[color])
 
     if len(item_sockets) == 0:
-        return False, False
+
+        return variation_options, variation_paths
 
     socket_combinations = unique_unordered_combinations(item_sockets)
 
     socket_variations = []
-    for socket_combination in socket_combinations:
-        socket_variant = {}
-        for i, cap_stat in enumerate(caps):
-            socket_variant[f"d{i+1}"] = 0
 
-        socket_variant['score'] = 0
+    socket_paths = []
+    for socket_combination in socket_combinations:
+        socket_variant = []
+        for i, cap_stat in enumerate(caps):
+            socket_variant.append(0)
+
+        socket_variant.append(0)
+
+        temp_item_path = copy.deepcopy(variation_paths[0])
+        temp_item_path['gems'] = socket_combination
+        socket_paths.append(temp_item_path)
+
 
         for gem in socket_combination:
             for stat, value in gems[gem]['stats'].items():
                 for i, cap_stat in enumerate(caps):
                     if cap_stat['name'] == stat:
-                        socket_variant[f"d{i+1}"] = value
 
-                    socket_variant['score'] += floor(value * weights[stat])
+                        socket_variant[i] = value + variation_options[0][i]
+
+                    socket_variant[-1] += floor(value * weights[stat]) + variation_options[0][-1]
 
         socket_variations.append(socket_variant)
 
-    # filtered_variations, filtered_gems = remove_duplicate_socket_sums(socket_variations, socket_combinations)
-
-    return socket_variations, socket_combinations
+    return socket_variations, socket_paths
 
 def unique_unordered_combinations(lists):
     seen = set()
@@ -237,63 +223,78 @@ def normalize_weights(weights):
         for k, v in weights.items()
     }
 
-def generate_enchant_options(enchants, caps, weights):
+def generate_enchant_options(item, enchants, caps, weights, variation_options, variation_paths):
+    # if there are no enchants for this slot
+    if not str(item['slotID']) in enchants:
+        return variation_options, variation_paths
 
-    # template variant
-    variant = {}
-    for i, cap_stat in enumerate(caps):
-        variant[f"d{i+1}"] = 0
-    variant['score'] = 0
+    enchants = enchants[str(item['slotID'])]
 
+    caps_list = [d["name"] for d in caps if "name" in d]
+
+    # Find best scoring enchant + capping enchants
     enchant_variations = []
     enchants_used = []
 
-    # temp_variant = copy.deepcopy(variant)
+    best_score = 0
+    best_enchant_ID = None
 
-    best_enchant = copy.deepcopy(variant)
-    for enchant, enchant_data in enchants.items():
+    for enchant_ID, enchant_data in enchants.items():
+        enchant_variant = []
+        for i, cap_stat in enumerate(caps):
+            enchant_variant.append(0)
+
+        enchant_variant.append(0)
+
         enchant_stats = enchant_data['stats']
 
-        cap_enchant = False
+        enchant_score = 0
+        for stat in enchant_stats:
+            for stat_name, stat_value in stat.items():
+                if stat_name in caps_list:
+                    stat_idx = caps_list.index(stat_name, 0)
+                    enchant_variant[stat_idx] += stat_value
+
+                enchant_score += floor(stat_value * weights[stat_name])
+
+        if not all(x==0 for x in enchant_variant):
+            enchants_used.append(enchant_ID)
+            enchant_variations.append(enchant_variant)
+
+
+        if enchant_score > best_score:
+            best_score = enchant_score
+            best_enchant_ID = enchant_ID
+
+    #append to temp variation
+    if best_score > 0:
+        enchant_variant = []
         for i, cap_stat in enumerate(caps):
-            if cap_stat in enchant_stats:
-                cap_enchant = True
+            enchant_variant.append(0)
+
+        enchant_variant.append(best_score)
+
+        enchants_used.append(best_enchant_ID)
+        enchant_variations.append(enchant_variant)
 
 
-        if cap_enchant:
+    item_variations = []
+    item_paths = []
 
-            continue
+    if len(enchants_used) == 0:
+        return variation_options, variation_paths
 
+    for option, path in zip(variation_options, variation_paths):
+        for enchant_variant, enchant_used in zip(enchant_variations, enchants_used):
+            temp_option = copy.deepcopy(option)
+            temp_path = copy.deepcopy(path)
 
+            temp_option = [x + y for x, y in zip(temp_option, enchant_variant)]
+            temp_path['enchant'] = enchant_used
 
+            item_variations.append(temp_option)
+            item_paths.append(temp_path)
 
+    # print(enchant_variations, enchants_used)
 
-
-
-
-
-
-
-
-    for enchant, enchant_data in enchants.items():
-        temp_variant = copy.deepcopy(variant)
-        for i, cap_stat in enumerate(caps):
-            enchant_variant[f"d{i+1}"] = 0
-
-        enchant_variant['score'] = 0
-
-        for stat, value in enchant_data['stats'].items():
-            for i, cap_stat in enumerate(caps):
-                if cap_stat['name'] == stat:
-                    enchant_variant[f"d{i+1}"] = value
-                    cap_enchant = True
-
-                enchant_variant['score'] += floor(value * weights[stat])
-
-    return enchant_variations, enchants_used
-
-def apply_sockets(item_options, socket_options):
-    return 0
-
-def apply_enchants(item_options, enchant_options):
-    return 0
+    return item_variations, item_paths

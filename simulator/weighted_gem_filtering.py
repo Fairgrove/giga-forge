@@ -30,6 +30,7 @@ def filter_gems(items, gems, caps, weights):
                 score = 0
                 for stat, value in gem_stats.items():
                     score += value * weights[stat]
+                    
                 if score > best_all_weights['score']:
                     best_all_weights['score'] = score
                     best_all_weights['gemID'] = gemID
