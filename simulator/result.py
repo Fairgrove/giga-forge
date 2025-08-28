@@ -124,7 +124,7 @@ def print_item_table(data):
     headers = ['Slot', 'Gem', 'Gem Stats', 'Enchant', 'Src', 'Dst']
     print(tabulate(table, headers=headers, tablefmt='grid'))
 
-def generate_sequence(items, gems, enchants, paths):
+def generate_before_after(items, gems, enchants, paths):
     stats_before = {}
 
     for stat in stat_name_translations:
@@ -162,11 +162,15 @@ def generate_sequence(items, gems, enchants, paths):
             for stat, value in enchant.items():
                 stats_after[stat] += value
 
+    headers = ["Stat", "Before","After","Delta"]
+    table = []
     for stat in stats_before:
         if stats_after[stat] > 0:
-            print(stat, stats_before[stat], stats_after[stat])
+            translated_stat = stat_name_translations[stat]
+            table.append([translated_stat, stats_before[stat], stats_after[stat], stats_after[stat] - stats_before[stat]])
+            # print(f"{translated_stat:<12} {stats_before[stat]:<4} -> {stats_after[stat]:<5} ({stats_after[stat] - stats_before[stat]})")
 
-    return True
+    print(tabulate(table, headers=headers, tablefmt='grid'))
 
 def get_item_by_ID(items, slotID):
     for item in items:
@@ -201,16 +205,9 @@ if __name__ == "__main__":
         item_path = item_paths[i][option-1]
         result.append(item_path)
 
+    generate_before_after(items_json, gems_json, enchants_json, result)
+    print()
     addon_input = generate_addon_output(result, items_json)
     print_item_table(result)
+    print("---:Paste this in the reforging window:---")
     print(addon_input)
-
-    generate_sequence(items_json, gems_json, enchants_json, result)
-
-    tota = [0,0,0]
-    for option, seq in zip(options_unfiltered, options['sequence']):
-        for i, v in enumerate(option[seq-1]):
-            tota[i] += v
-        print(option[seq-1])
-
-    print(tota)
