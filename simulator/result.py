@@ -1,4 +1,5 @@
 import json
+import math
 from tabulate import tabulate
 
 slotID_translations = {
@@ -123,6 +124,66 @@ def print_item_table(data):
     headers = ['Slot', 'Gem', 'Gem Stats', 'Enchant', 'Src', 'Dst']
     print(tabulate(table, headers=headers, tablefmt='grid'))
 
+def generate_sequence(items, gems, enchants, paths):
+    stats_before = {}
+
+    for stat in stat_name_translations:
+        stats_before[stat] = 0
+
+    for item in items:
+        for stat, value in item['stats'].items():
+            stats_before[stat] += value
+
+    stats_after = stats_before.copy()
+
+    for path in paths:
+        item = get_item_by_ID(items, path['slotID'])
+        src = path['src']
+        dst = path['dst']
+
+        # reforging
+        if dst:
+            new_stat = math.floor(item['stats'][src] * 0.4)
+
+            stats_after[src] -= new_stat
+            stats_after[dst] += new_stat
+
+        # gemming
+        for gemID in path['gems']:
+            for stat, value in gems[gemID]['stats'].items():
+                stats_after[stat] += value
+
+        # enchanting
+        slotID_str = str(path['slotID'])
+        if slotID_str in enchants:
+            enchant_slot = enchants[slotID_str]
+            enchant = enchant_slot[path['enchant']]['stats']
+
+            for stat, value in enchant.items():
+                stats_after[stat] += value
+
+    for stat in stats_before:
+        if stats_after[stat] > 0:
+            print(stat, stats_before[stat], stats_after[stat])
+
+    return True
+
+def get_item_by_ID(items, slotID):
+    for item in items:
+        if item['slotID'] == slotID:
+            return item
+
+    return None
+
+def print_items(result, items):
+    for i in result:
+        for j,v in i.items():
+            print(j, v)
+
+        for j, v in get_item_by_ID(items_json, i['slotID'])['stats'].items():
+            print(f"   {j} {v}")
+        print()
+
 if __name__ == "__main__":
     character_data = load_data('items.json')
     items_json = character_data['items']
@@ -133,20 +194,23 @@ if __name__ == "__main__":
     item_paths = load_data('output/paths.json')
     options = load_data('output/result.json')
 
+    options_unfiltered = load_data('output/options.json')
+
     result = []
     for i, option in enumerate(options['sequence']):
         item_path = item_paths[i][option-1]
         result.append(item_path)
 
-        # print(f"SLOT: {slotID_translations[item_path['slotID']]} ({item_path['slotID']})")
-        # print(f"from: {item_path['src']}\n  --> {item_path['dst']}")
-        # for gemID in item_path['gems']:
-            # print(f"   {gems_json[gemID]['name']}({gems_json[gemID]['color']}): {gems_json[gemID]['stats']}")
-        # if item_path['enchant']:
-            # enchant_name = enchants_json[str(item_path['slotID'])][item_path['enchant']]['name']
-            # print(f"   {enchant_name}")
-        # print()
-
     addon_input = generate_addon_output(result, items_json)
     print_item_table(result)
     print(addon_input)
+
+    generate_sequence(items_json, gems_json, enchants_json, result)
+
+    tota = [0,0,0]
+    for option, seq in zip(options_unfiltered, options['sequence']):
+        for i, v in enumerate(option[seq-1]):
+            tota[i] += v
+        print(option[seq-1])
+
+    print(tota)

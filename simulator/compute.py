@@ -94,7 +94,7 @@ def compute_reforge_core(caps, reforge_options):
 
             inner_pbar.update(num_item_opts)
 
-        scores, codes = newscores, newcodes
+        scores, codes = newscores.copy(), newcodes.copy()
 
         gc.collect()
 
