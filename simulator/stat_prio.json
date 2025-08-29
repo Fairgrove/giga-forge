@@ -1,4 +1,18 @@
 {
+    "raidBuffs": {
+        "mastery": {
+            "value": 3000,
+            "enabled": true
+        },
+        "spellHaste": {
+            "value": 2125,
+            "enabled": true
+        },
+        "crit": {
+            "value": 3000,
+            "enabled": true
+        }
+    },
     "caps": [
         {
             "name": "ITEM_MOD_EXPERTISE_RATING",
@@ -33,8 +47,19 @@
         "ITEM_MOD_PARRY_RATING",
         "ITEM_MOD_DODGE_RATING"
     ],
-    "stat_eq":[
-        {"ITEM_MOD_PARRY_RATING": ["ITEM_MOD_PARRY_RATING", "ITEM_MOD_DODGE_RATING"]},
-        {"ITEM_MOD_HIT_RATING": ["ITEM_MOD_HIT_RATING", "ITEM_MOD_EXPERTISE_RATING", "ITEM_MOD_SPIRIT_SHORT"]}
+    "stat_eq": [
+        {
+            "ITEM_MOD_PARRY_RATING": [
+                "ITEM_MOD_PARRY_RATING",
+                "ITEM_MOD_DODGE_RATING"
+            ]
+        },
+        {
+            "ITEM_MOD_HIT_RATING": [
+                "ITEM_MOD_HIT_RATING",
+                "ITEM_MOD_EXPERTISE_RATING",
+                "ITEM_MOD_SPIRIT_SHORT"
+            ]
+        }
     ]
 }
