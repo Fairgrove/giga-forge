@@ -19,6 +19,19 @@ def get_cap_stat_index(caps, stat):
 
     return caps_list.index(stat)
 
+def generate_empty_item_variation(caps):
+    caps_list = [d["name"] for d in caps if "name" in d]
+
+    item_variant = []
+    for cap_idx in caps_list:
+        item_variant.append(0)
+    item_variant.append(0)
+
+    return item_variant
+
+def combine_item_variations(variation1, variation2):
+        return [stat1 + stat2 for stat1, stat2 in zip(variation1, variation2)]
+
 def get_items_options(items, gems, filtered_gems, enchants, caps, weights, include_gems=True):
     items_variations = []
     items_paths = []
@@ -117,10 +130,7 @@ def generate_item_reforge_option(item, caps, weights, src=None, dst=None):
         "enchant": None,
         }
 
-    item_variant = []
-    for cap_idx in caps_list:
-        item_variant.append(0)
-    item_variant.append(0)
+    item_variant = generate_empty_item_variation(caps)
 
     temp_item = copy.deepcopy(item)
 
@@ -156,34 +166,31 @@ def generate_item_socket_options(item, gems, filtered_gems, caps, weights, varia
 
     socket_combinations = unique_unordered_combinations(item_sockets)
 
-    socket_variations = []
-    socket_paths = []
+    socketed_item_variations = []
+    socketed_item_paths = []
 
     for socket_combination in socket_combinations:
-        socket_variant = []
-        for i, cap_stat in enumerate(caps):
-            socket_variant.append(0)
+        socket_variation = generate_empty_item_variation(caps)
 
-        socket_variant.append(0)
-
-        temp_item_path = copy.deepcopy(variation_paths[0])
-        temp_item_path['gems'] = socket_combination
-        socket_paths.append(temp_item_path)
+        socketed_item_path = copy.deepcopy(variation_paths[0])
+        socketed_item_path['gems'] = socket_combination
+        socketed_item_paths.append(socketed_item_path)
 
         for gem in socket_combination:
             for stat, value in gems[gem]['stats'].items():
                 stat_idx = get_cap_stat_index(caps, stat)
                 if get_cap_stat_index(caps, stat):
-                    socket_variant[stat_idx] += value
+                    socket_variation[stat_idx] += value
 
-                socket_variant[-1] += floor(value * weights[stat])
+                socket_variation[-1] += floor(value * weights[stat])
 
         # add item and sockets together
-        socketed_item_variant = [item_stat + socket_stat for item_stat, socket_stat in zip(variation_options[0], socket_variant)]
+        socketed_item_variation = combine_item_variations(variation_options[0], socket_variation)
+        #socketed_item_variation = [item_stat + socket_stat for item_stat, socket_stat in zip(variation_options[0], socket_variation)]
 
-        socket_variations.append(socketed_item_variant)
+        socketed_item_variations.append(socketed_item_variation)
 
-    return socket_variations, socket_paths
+    return socketed_item_variations, socketed_item_paths
 
 def unique_unordered_combinations(lists):
     seen = set()
@@ -276,7 +283,6 @@ def generate_enchant_options(item, enchants, caps, weights, variation_options, v
 
         enchants_used.append(best_enchant_ID)
         enchant_variations.append(enchant_variant)
-
 
     item_variations = []
     item_paths = []
