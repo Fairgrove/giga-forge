@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <limits>
+#include <chrono>
 #include "json.hpp"  // nlohmann/json
 
 using json = nlohmann::json;
@@ -137,9 +138,17 @@ int main() {
         options_json.get<std::vector<std::vector<std::vector<int>>>>();
 
     // Compute
+    auto compute_start = std::chrono::high_resolution_clock::now();
     std::unordered_map<U64, int> scores;
     std::unordered_map<U64, std::vector<int>> sequences;
     compute_reforge_core(init_values, reforge_options, scores, sequences);
+    auto compute_end = std::chrono::high_resolution_clock::now();
+    
+    auto compute_duration = std::chrono::duration_cast<std::chrono::seconds>(compute_end - compute_start);
+
+    std::cout << "Compute time: " << compute_duration.count() << " seconds"<< std::endl;
+
+    std::cout << "finding best combination" << std::endl;
 
     // Find best score meeting target caps
     int max_score = std::numeric_limits<int>::min();
