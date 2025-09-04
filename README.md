@@ -12,15 +12,15 @@ pip3 install tabulate
 ```
 
 # How to
-Put this directory in your addon folder 
-0. Make sure to have all the dependencies 
-1. Open wow and press the button above the character pane to export your characters gear data with the addon.
-2. Delete all contents of `items.json` and paste in your characters gear data and save.
-3. Edit `stat_prio.json` to fit your stat weights and which stats you want to reach a certain cap
-4. run `options.py` This creates every possible permutation of all your items (every reforge, gen and enchaing possibility)
-5. run `compute.py` or `./compute`. The compiled c++ computation program is faster. the python script is easier to run.
-6. When computing is done, run `results.py`. This prints out the most optimal combination of reforgin, gemming and enchanting
-7. Paste the reforging string into the new window that pops up when you go to a reforging vendor
+Put this directory in your addon folder    
+1. Make sure to have all the dependencies 
+2. Open wow and press the button above the character pane to export your characters gear data with the addon.
+3. Delete all contents of `items.json` and paste in your characters gear data and save.
+4. Edit `stat_prio.json` to fit your stat weights and which stats you want to reach a certain cap
+5. run `options.py` This creates every possible permutation of all your items (every reforge, gen and enchaing possibility)
+6. run `compute.py` or `./compute`. The compiled c++ computation program is faster. the python script is easier to run.
+7. When computing is done, run `results.py`. This prints out the most optimal combination of reforgin, gemming and enchanting
+8. Paste the reforging string into the new window that pops up when you go to a reforging vendor
 
 The sockets, enchant and reforge are shown for each item in a intuitive manner, showing you which pieces should have what
 
