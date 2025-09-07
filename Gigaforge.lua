@@ -3,6 +3,9 @@ local specIndex = C_SpecializationInfo.GetSpecialization()
 local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
 local _, _, race = UnitRace("player")
 
+local blackSmithingIdx = 6
+local blackSmithingLevelRequirement = 550
+
 local data = {}
 
 data['specID'] = specID
@@ -16,6 +19,10 @@ data['stats'] = {
     ['ITEM_MOD_HASTE_RATING'] = GetCombatRating(CR_HASTE_MELEE),
     ['ITEM_MOD_MASTERY_RATING_SHORT'] = GetCombatRating(CR_MASTERY),
     ['ITEM_MOD_CRIT_RATING'] = GetCombatRating(CR_CRIT_MELEE),
+    ['ITEM_MOD_STRENGTH_SHORT'] = UnitStat("player", 1),
+    ['ITEM_MOD_AGILITY_SHORT'] = UnitStat("player", 2),
+    ['ITEM_MOD_STAMINA_SHORT'] = UnitStat("player", 3),
+    ['ITEM_MOD_INTELLECT_SHORT'] = UnitStat("player", 4),
     ['ITEM_MOD_SPIRIT_SHORT'] = UnitStat("player", 5),
 }
 
@@ -77,6 +84,16 @@ function GigaforgeGetEquippedItemInfo()
 
     local itemData = {}
     
+    local hasBlackSmithing = false
+    for idx = 1, 2 do
+        local profIdx = (select(idx, GetProfessions()))
+        local _, _, skillLevel = GetProfessionInfo(profIdx)
+        if profIdx == blackSmithingIdx and skillLevel > blackSmithingLevelRequirement then
+            hasBlackSmithing = true
+        end
+    end
+
+
     for slot = 1, 19 do
         local itemLink = GetInventoryItemLink("player", slot)
         
@@ -85,15 +102,23 @@ function GigaforgeGetEquippedItemInfo()
             tooltip:SetInventoryItem("player", slot)
             
             local sockets = {}
+            local equippedGems = {}
             local bonus = {}
             local itemStats = GetItemStats(itemLink)
             local stats = {}
 
-            print(slot)
-            for k, v in pairs(itemStats) do
-                print(k, v)
+            --print(slot)
+            --for k, v in pairs(itemStats) do
+                --print(k, v)
+            --end
+            --print()
+
+            for gemidx = 1, 3 do
+                gem = C_Item.GetItemGem(GetInventoryItemLink("player", slot), gemidx)
+                if gem then
+                    table.insert(equippedGems, gem)
+                end
             end
-            print()
             
             for statName, statValue in pairs(itemStats) do
                 for _, value in pairs(statlist) do
@@ -112,6 +137,19 @@ function GigaforgeGetEquippedItemInfo()
                     end
                 end
             end
+
+            -- adding prismatic sockets
+            if slot == 6 then
+                table.insert(sockets, "prismatic")
+            end
+
+            if hasBlackSmithing then
+                if slot == 10 or slot == 9 then
+                    table.insert(sockets, "prismatic")
+                end
+            end
+
+            
             
         --[[     for i = 1, tooltip:NumLines() do
                 local line = _G["SocketScannerTooltipTextLeft" .. i]:GetText()
@@ -143,6 +181,7 @@ function GigaforgeGetEquippedItemInfo()
                     locked = false,
                     stats = stats,
                     sockets = sockets,
+                    equippedGems = equippedGems,
                     bonus = bonus
             })
         end
@@ -211,6 +250,7 @@ data['items'] = items
 local encoded = encode_json(data)
 
 -- Create the popup frame
+--local infoFrame = CreateFrame("Frame", "GigaforgeFrame", UIParent, "BackdropTemplate")
 local infoFrame = CreateFrame("Frame", "GigaforgeFrame", UIParent, "BackdropTemplate")
 infoFrame:SetSize(400, 300)
 infoFrame:SetPoint("CENTER")
@@ -222,14 +262,35 @@ infoFrame:SetBackdrop({
 })
 infoFrame:Hide()
 
+
+local scrollFrame = CreateFrame("ScrollFrame", nil, infoFrame, "UIPanelScrollFrameTemplate")
+scrollFrame:SetSize(350, 250)
+scrollFrame:SetPoint("CENTER")
+
+
+local editBox = CreateFrame("EditBox", nil, infoFrame)
+editBox:SetFontObject(ChatFontNormal)
+editBox:SetMultiLine(true)
+editBox:SetWidth(400)
+scrollFrame:SetScrollChild(editBox)
+editBox:SetScript("OnEscapePressed", function() infoFrame:Hide() end)
+editBox:SetAutoFocus(true)
+
+-- Allow text wrapping
+--editBox:SetWordWrap(true)
+
+
+
+
+--[[
 -- Create the editable text box
 local editBox = CreateFrame("EditBox", nil, infoFrame, "InputBoxTemplate")
 editBox:SetMultiLine(true)
 editBox:SetSize(360, 240)
 editBox:SetPoint("CENTER")
-editBox:SetAutoFocus(true)
-editBox:SetScript("OnEscapePressed", function() infoFrame:Hide() end)
 
+
+]]
 -- Auto-highlight text when shown
 infoFrame:SetScript("OnShow", function()
     local text = encoded
