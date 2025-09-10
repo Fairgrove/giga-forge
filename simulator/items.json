@@ -1,182 +1,214 @@
 {
-	"items": [
-		{
-			"stats": {
-				"ITEM_MOD_CRIT_RATING": 605,
-				"ITEM_MOD_HASTE_RATING": 461
-			},
-			"locked": false,
-			"sockets": [
-				"blue"
-			],
-			"slotID": 1,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_PARRY_RATING": 638,
-				"ITEM_MOD_HIT_RATING": 323
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 2,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_PARRY_RATING": 811,
-				"ITEM_MOD_HIT_RATING": 391
-			},
-			"locked": false,
-			"sockets": [
-				"red"
-			],
-			"slotID": 3,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_PARRY_RATING": 1066,
-				"ITEM_MOD_EXPERTISE_RATING": 500
-			},
-			"locked": false,
-			"sockets": [
-				"red",
-				"blue"
-			],
-			"slotID": 5,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 529,
-				"ITEM_MOD_MASTERY_RATING_SHORT": 418
-			},
-			"locked": false,
-			"sockets": [
-				"yellow",
-				"blue",
-				"prismatic"
-			],
-			"slotID": 6,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 715,
-				"ITEM_MOD_MASTERY_RATING_SHORT": 812
-			},
-			"locked": false,
-			"sockets": [
-				"red"
-			],
-			"slotID": 7,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 507,
-				"ITEM_MOD_MASTERY_RATING_SHORT": 536
-			},
-			"locked": false,
-			"sockets": [
-				"yellow"
-			],
-			"slotID": 8,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 377,
-				"ITEM_MOD_PARRY_RATING": 377
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 9,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_HASTE_RATING": 485,
-				"ITEM_MOD_HIT_RATING": 425
-			},
-			"locked": false,
-			"sockets": [
-				"blue"
-			],
-			"slotID": 10,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_PARRY_RATING": 682,
-				"ITEM_MOD_EXPERTISE_RATING": 345
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 11,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 468,
-				"ITEM_MOD_PARRY_RATING": 353
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 12,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_MASTERY_RATING_SHORT": 1079
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 13,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_HASTE_RATING": 956
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 14,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_DODGE_RATING": 518,
-				"ITEM_MOD_MASTERY_RATING_SHORT": 345
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 15,
-			"bonus": []
-		},
-		{
-			"stats": {
-				"ITEM_MOD_CRIT_RATING": 841,
-				"ITEM_MOD_EXPERTISE_RATING": 634
-			},
-			"locked": false,
-			"sockets": [],
-			"slotID": 16,
-			"bonus": []
-		}
-	],
-	"race": 10,
-	"class": 6,
-	"stats": {
-		"ITEM_MOD_DODGE_RATING": 3227,
-		"ITEM_MOD_CRIT_RATING": 1048,
-		"ITEM_MOD_MASTERY_RATING_SHORT": 6787,
-		"ITEM_MOD_SPIRIT_SHORT": 65,
-		"ITEM_MOD_PARRY_RATING": 3992,
-		"ITEM_MOD_HASTE_RATING": 1386,
-		"ITEM_MOD_EXPERTISE_RATING": 1854,
-		"ITEM_MOD_HIT_RATING": 1623
-	},
-	"specID": 0
+    "items": [
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 583,
+                "ITEM_MOD_PARRY_RATING": 623
+            },
+            "equippedGems": [
+                null
+            ],
+            "locked": false,
+            "sockets": [
+                "red"
+            ],
+            "slotID": 1,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 720,
+                "ITEM_MOD_EXPERTISE_RATING": 365
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 2,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_PARRY_RATING": 811,
+                "ITEM_MOD_HIT_RATING": 391
+            },
+            "equippedGems": [
+                "Flashing Primordial Ruby"
+            ],
+            "locked": false,
+            "sockets": [
+                "red"
+            ],
+            "slotID": 3,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_PARRY_RATING": 868,
+                "ITEM_MOD_HIT_RATING": 538
+            },
+            "equippedGems": [
+                "Stalwart Vermilion Onyx",
+                "Stalwart Vermilion Onyx"
+            ],
+            "locked": false,
+            "sockets": [
+                "yellow",
+                "yellow"
+            ],
+            "slotID": 5,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 529,
+                "ITEM_MOD_MASTERY_RATING_SHORT": 418
+            },
+            "equippedGems": [
+                "Stalwart Vermilion Onyx",
+                "Retaliating Imperial Amethyst",
+                "Flashing Primordial Ruby"
+            ],
+            "locked": false,
+            "sockets": [
+                "yellow",
+                "blue",
+                "prismatic"
+            ],
+            "slotID": 6,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 715,
+                "ITEM_MOD_MASTERY_RATING_SHORT": 812
+            },
+            "equippedGems": [
+                "Flashing Primordial Ruby"
+            ],
+            "locked": false,
+            "sockets": [
+                "red"
+            ],
+            "slotID": 7,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 577,
+                "ITEM_MOD_MASTERY_RATING_SHORT": 612
+            },
+            "equippedGems": [
+                "Stalwart Vermilion Onyx"
+            ],
+            "locked": false,
+            "sockets": [
+                "yellow"
+            ],
+            "slotID": 8,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 480,
+                "ITEM_MOD_PARRY_RATING": 480
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 9,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 909,
+                "ITEM_MOD_HIT_RATING": 460
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 10,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_PARRY_RATING": 682,
+                "ITEM_MOD_EXPERTISE_RATING": 345
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 11,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 487,
+                "ITEM_MOD_MASTERY_RATING_SHORT": 399
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 12,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_MASTERY_RATING_SHORT": 1218
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 13,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_HASTE_RATING": 1079
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 14,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_DODGE_RATING": 443,
+                "ITEM_MOD_PARRY_RATING": 461
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 15,
+            "bonus": []
+        },
+        {
+            "stats": {
+                "ITEM_MOD_CRIT_RATING": 949,
+                "ITEM_MOD_EXPERTISE_RATING": 716
+            },
+            "equippedGems": [],
+            "locked": false,
+            "sockets": [],
+            "slotID": 16,
+            "bonus": []
+        }
+    ],
+    "race": 10,
+    "class": 6,
+    "stats": {
+        "ITEM_MOD_DODGE_RATING": 5457,
+        "ITEM_MOD_STRENGTH_SHORT": 11031,
+        "ITEM_MOD_MASTERY_RATING_SHORT": 2218,
+        "ITEM_MOD_PARRY_RATING": 7754,
+        "ITEM_MOD_SPIRIT_SHORT": 65,
+        "ITEM_MOD_INTELLECT_SHORT": 41,
+        "ITEM_MOD_AGILITY_SHORT": 133,
+        "ITEM_MOD_STAMINA_SHORT": 27272,
+        "ITEM_MOD_CRIT_RATING": 735,
+        "ITEM_MOD_HASTE_RATING": 648,
+        "ITEM_MOD_EXPERTISE_RATING": 2551,
+        "ITEM_MOD_HIT_RATING": 2232
+    },
+    "specID": 0
 }

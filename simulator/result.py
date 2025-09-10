@@ -2,6 +2,15 @@ import json
 import math
 from tabulate import tabulate
 
+text_coloring = {
+        'red':"\033[31m",
+        'blue':"\033[34m",
+        'yellow':"\033[33m",
+        'prismatic':"\033[37m",
+        'green':"\033[32m",
+        'white':"\033[0m", # This is what was called reset
+        }
+
 slotID_translations = {
         0: 'ammo',
         1: 'head',
@@ -98,15 +107,48 @@ def generate_addon_output(item_paths, items):
 
     return result
 
-def print_item_table(data):
+def print_item_table(results, items, gems, enchants):
     table = []
-    for item in data:
+    for result in results:
         #gems = '\n'.join(item['gems']) if item['gems'] else '-'
-        gems = ""
-        for gemID in item['gems']:
-            gems += f"{gems_json[gemID]['name']}({gems_json[gemID]['color']})\n"
+        gems_before = ""
+        gems_after = ""
+
+
+
+        item = get_item_by_ID(items, result['slotID'])
+        equipped_gems = item['equippedGems']
+        new_gems = result['gems']
+        sockets = item['sockets']
+
+        for equipped_gem, new_gem, socket_color in zip(equipped_gems, new_gems, sockets):
+            new_gem_name = gems_json[new_gem]['name']
+
+            after_color = text_coloring['white']
+            if not new_gem_name == equipped_gem:
+                after_color = text_coloring['green']
+
+            if equipped_gem == None:
+                socket_symbol = f"{text_coloring[socket_color]}□ {text_coloring['white']}"
+            else:
+                socket_symbol = f"{text_coloring[socket_color]}▣ {text_coloring['white']}"
+
+            gems_before +=f"{socket_symbol}{equipped_gem}\n"
+            gems_after += f"{text_coloring[socket_color]}▣ {text_coloring['white']}{after_color}{new_gem_name}{text_coloring['white']}\n"
+
+            #print(f"{socket_symbol}{equipped_gem} {text_coloring[socket_color]}▣ {text_coloring['white']}{after_color}{new_gem_name}{text_coloring['white']}")
+
+
+
+
+
+
+
+
+        # for gemID in result['gems']:
+            # gems += f"{gems_json[gemID]['name']}({gems_json[gemID]['color']})\n"
         gems_stats  = ""
-        for gemID in item['gems']:
+        for gemID in result['gems']:
             temp = ""
             for gem_stat_name, gem_stat_value in gems_json[gemID]['stats'].items():
                 temp += f"{stat_name_translations[gem_stat_name]}  {gem_stat_value}, "
@@ -114,14 +156,15 @@ def print_item_table(data):
             gems_stats += temp + "\n"
 
         table.append([
-            f"{slotID_translations[item['slotID']]} ({item['slotID']})",
-            gems,
+            f"{slotID_translations[result['slotID']]} ({result['slotID']})",
+            gems_before,
+            gems_after,
             gems_stats,
-            enchants_json[str(item['slotID'])][item['enchant']]['name'] if item['enchant'] else '-',
-            stat_name_translations[item['src']],
-            stat_name_translations[item['dst']] if item['dst'] else '-',
+            enchants_json[str(result['slotID'])][result['enchant']]['name'] if result['enchant'] else '-',
+            stat_name_translations[result['src']],
+            stat_name_translations[result['dst']] if result['dst'] else '-',
         ])
-    headers = ['Slot', 'Gem', 'Gem Stats', 'Enchant', 'Src', 'Dst']
+    headers = ['Slot', 'Gem Before', 'Gem After', 'Gem Stats', 'Enchant', 'Src', 'Dst']
     print(tabulate(table, headers=headers, tablefmt='grid'))
 
 def generate_before_after(items, gems, enchants, paths):
@@ -208,6 +251,6 @@ if __name__ == "__main__":
     generate_before_after(items_json, gems_json, enchants_json, result)
     print()
     addon_input = generate_addon_output(result, items_json)
-    print_item_table(result)
+    print_item_table(result, items_json, gems_json, enchants_json)
     print("---:Paste this in the reforging window:---")
     print(addon_input)
