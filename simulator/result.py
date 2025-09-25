@@ -245,6 +245,7 @@ if __name__ == "__main__":
 
     result = []
     for i, option in enumerate(options['sequence']):
+        # print(i)
         item_path = item_paths[i][option-1]
         result.append(item_path)
 

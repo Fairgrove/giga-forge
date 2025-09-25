@@ -11,6 +11,8 @@ unreforgable_stats = [
         'resilience',
         ]
 
+spell_haste_specs = {0,}
+
 def get_cap_stat_index(caps, stat):
     caps_list = [d["name"] for d in caps if "name" in d]
 
