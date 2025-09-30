@@ -15,11 +15,6 @@
     },
     "caps": [
         {
-            "name": "ITEM_MOD_MASTERY_RATING_SHORT",
-            "init": 0,
-            "target": 5000
-        },
-        {
             "name": "ITEM_MOD_EXPERTISE_RATING",
             "init": 0,
             "target": 2550
