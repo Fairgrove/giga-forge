@@ -11,6 +11,8 @@ unreforgable_stats = [
         'resilience',
         ]
 
+spell_haste_specs = {0,}
+
 def get_cap_stat_index(caps, stat):
     caps_list = [d["name"] for d in caps if "name" in d]
 
@@ -72,6 +74,9 @@ def get_item_options(item, gems, filtered_gems, enchants, caps, weights, include
                 item_paths.append(path)
 
     filtered_item_options, filtered_item_paths = remove_duplicate_item_variations(item_options, item_paths)
+
+    if len(item_options) > len(filtered_item_options):
+        print(f"Removed {len(item_options) - len(filtered_item_options)} duplicates on item slot: {item['slotID']}\n  Before: {len(item_options)}\n  After:  {len(filtered_item_options)}")
 
     return filtered_item_options, filtered_item_paths
     # return item_options, item_paths
@@ -164,7 +169,9 @@ def generate_item_socket_options(item, gems, filtered_gems, caps, weights, varia
     if len(item_sockets) == 0:
         return variation_options, variation_paths
 
-    socket_combinations = unique_unordered_combinations(item_sockets)
+    # socket_combinations = unique_unordered_combinations(item_sockets)
+    socket_combinations = cartesian_product(item_sockets)
+    # print(item_sockets)
 
     socketed_item_variations = []
     socketed_item_paths = []
@@ -205,6 +212,9 @@ def unique_unordered_combinations(lists):
             result.append(list(sorted_combo))
 
     return result
+
+def cartesian_product(socket_list):
+    return [list(combo) for combo in product(*socket_list)]
 
 def remove_duplicate_item_variations(variations, item_paths):
     unique_variations = []
@@ -301,6 +311,8 @@ def generate_enchant_options(item, enchants, caps, weights, variation_options, v
             item_variations.append(temp_option)
             item_paths.append(temp_path)
 
-    # print(enchant_variations, enchants_used)
-
     return item_variations, item_paths
+
+def add_stat_equalities(item_stats, specID):
+
+    return 1

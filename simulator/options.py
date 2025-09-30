@@ -11,6 +11,8 @@ from weighted_gem_filtering import filter_gems as weighted_filter_gems
 # from priority_options import get_items_options as priority_get_items_options
 # from priority_gem_filtering import filter_gems as priority_filter_gems
 
+spell_haste_specs = {0,}
+
 def load_data(file_name):
     with open(file_name, 'r') as f:
         data = json.load(f)
@@ -29,9 +31,10 @@ def get_init_cap_values(items, caps):
             if cap_stat in item['stats']:
                 result[cap_stat] += item['stats'][cap_stat]
 
+
     return result
 
-def set_init_cap_values(items, caps):
+def set_init_cap_values(items, caps, raid_buffs, specID):
     init_values = get_init_cap_values(items, caps)
 
     caps_with_init_values = caps.copy()
@@ -43,6 +46,24 @@ def set_init_cap_values(items, caps):
 
     return caps_with_init_values
 
+def funii():
+    for cap in caps_with_init_values:
+        # is stat a raidbuff
+        if not cap['name'] in raid_buffs:
+            continue
+
+        # is that raidbuff enabled
+        if not raid_buffs[cap['name']]['enabled']:
+            continue
+
+        if not cap['name'] == 'ITEM_MOD_HASTE_RATING':
+            cap['init'] += raid_buffs[cap['name']]['value']
+            continue
+
+        if cap['name'] == 'ITEM_MOD_HASTE_RATING' and specID in spell_haste_specs:
+            cap['init'] += raid_buffs[cap['name']]['value']
+
+
 if __name__ == "__main__":
     character_data = load_data('items.json')
     items_json = character_data['items']
@@ -51,19 +72,24 @@ if __name__ == "__main__":
     enchants_json = load_data('enchants.json')
 
     pre_init_caps = stats['caps']
+    raid_buffs = stats['raid_buffs']
     stat_prio = stats['stat_prio']
     stat_weights = stats['stat_weights']
 
-    caps = set_init_cap_values(items_json, pre_init_caps)
+    caps = set_init_cap_values(items_json, pre_init_caps, raid_buffs, character_data['specID'])
     caps_list = [d["name"] for d in caps if "name" in d]
 
     filtered_gems = weighted_filter_gems(items_json, gems_json, caps, stat_weights)
     options, item_paths = weighted_get_items_options(items_json, gems_json, filtered_gems, enchants_json, caps, stat_weights, include_gems=True)
+    for k, v in filtered_gems.items():
+        print(k)
+        for gemid in v:
+            print(f"  {gems_json[gemid]['stats']}")
 
     # sorting hightest to lowest
     item_paths = sorted(item_paths, key=len, reverse=True)
     options = sorted(options, key=len, reverse=True)
-
+    print(caps)
     # --- OUTPUT ---
     print('writing output')
     output_dir = "output"
