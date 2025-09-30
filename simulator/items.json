@@ -6,7 +6,8 @@
                 "ITEM_MOD_PARRY_RATING": 623
             },
             "equippedGems": [
-                null
+                "Reverberating Primal Diamond",
+                "Flashing Primordial Ruby"
             ],
             "locked": false,
             "sockets": [

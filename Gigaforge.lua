@@ -1,39 +1,12 @@
-local _, _, class = UnitClass("player")
-local specIndex = C_SpecializationInfo.GetSpecialization()
-local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
-local _, _, race = UnitRace("player")
+-- hidden tooltip
+local scanner = CreateFrame("GameTooltip", "TooltipScannerTooltip", nil, "GameTooltipTemplate")
+scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
 
-local data = {}
-
-data['specID'] = specID
-data['class'] = class
-data['race'] = race
-data['stats'] = {
-    ['ITEM_MOD_DODGE_RATING'] = GetCombatRating(CR_DODGE),
-    ['ITEM_MOD_PARRY_RATING'] = GetCombatRating(CR_PARRY),
-    ['ITEM_MOD_HIT_RATING'] = GetCombatRating(CR_HIT_MELEE),
-    ['ITEM_MOD_EXPERTISE_RATING'] = GetCombatRating(CR_EXPERTISE),
-    ['ITEM_MOD_HASTE_RATING'] = GetCombatRating(CR_HASTE_MELEE),
-    ['ITEM_MOD_MASTERY_RATING_SHORT'] = GetCombatRating(CR_MASTERY),
-    ['ITEM_MOD_CRIT_RATING'] = GetCombatRating(CR_CRIT_MELEE),
-    ['ITEM_MOD_SPIRIT_SHORT'] = UnitStat("player", 5),
-}
-
-local statlist = {
-    ['Expertise'] = 'ITEM_MOD_EXPERTISE_RATING',
-    ['Hit'] = 'ITEM_MOD_HIT_RATING',
-    ['Crit'] = 'ITEM_MOD_CRIT_RATING',
-    ['Haste'] = 'ITEM_MOD_HASTE_RATING',
-    ['Mastery'] = 'ITEM_MOD_MASTERY_RATING_SHORT',
-    ['Dodge'] = 'ITEM_MOD_DODGE_RATING',
-    ['Parry'] = 'ITEM_MOD_PARRY_RATING',
-    ['Spirit'] = 'ITEM_MOD_SPIRIT_SHORT',
-    --['Intellect'] = 'ITEM_MOD_INTELLECT_SHORT',
-    --['Agility'] = 'ITEM_MOD_AGILITY_SHORT',
-    --['Strength'] = 'ITEM_MOD_STRENGTH_SHORT',
-    --['Stamina'] = 'ITEM_MOD_STAMINA_SHORT',
-    ['Power'] = 'power',
-    ['Resilience'] = 'resilience',
+-- slots to check
+local slots = {
+    "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot",
+    "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot",
+    "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot"
 }
 
 local socketColorList = {
@@ -43,115 +16,149 @@ local socketColorList = {
     ['prismatic'] = 'EMPTY_SOCKET_PRISMATIC',
 }
 
--- caching all items so they can be scanned
-local function cacheEquippedItems()
-    for slot = 1, 19 do
-        local a = GetInventoryItemID("player", slot)
-        if a then
-            local b = GetItemInfo(a)
-        end
-    end
+local statlist = {
+    ['Expertise'] = 'ITEM_MOD_EXPERTISE_RATING',
+    ['Hit'] = 'ITEM_MOD_HIT_RATING',
+    ['Critical Strike'] = 'ITEM_MOD_CRIT_RATING',
+    ['Haste'] = 'ITEM_MOD_HASTE_RATING',
+    ['Mastery'] = 'ITEM_MOD_MASTERY_RATING_SHORT',
+    ['Dodge'] = 'ITEM_MOD_DODGE_RATING',
+    ['Parry'] = 'ITEM_MOD_PARRY_RATING',
+    ['Spirit'] = 'ITEM_MOD_SPIRIT_SHORT',
+}
+
+-- only these stats
+local tracked = {
+    ["Dodge"]     = true,
+    ["Parry"]     = true,
+    ["Mastery"]   = true,
+    ["Haste"]     = true,
+    ["Critical Strike"] = true,
+    ["Crit"]      = true,
+    ["Spirit"]    = true,
+    ["Expertise"] = true,
+    ["Hit"]       = true,
+}
+
+local function hasKey(tbl, key)
+    return tbl[key] ~= nil
 end
 
-local function ParseStatLine(line)
-    for name, token in pairs(statlist) do
-        -- Check if line contains the stat name (case-insensitive)
-        if line:lower():find(name:lower()) then
-            -- Extract number (handles e.g. "+1300 Parry Rating" or "1300 Parry")
-            local value = line:match("([%+%-]?%d+)")
-            
-            if value then
-                return token, tonumber(value)
+-- helper to normalize numbers with separators
+local function CleanNumber(numstr)
+    -- remove , and . (thousand separators)
+    local clean = numstr:gsub("[,%.]", "")
+    return tonumber(clean)
+end
+
+local function hasBlackSmithingRequired()
+    local blackSmithingIdx = 6
+    local blackSmithingLevelRequirement = 550
+
+    for idx = 1, 2 do
+        local profIdx = (select(idx, GetProfessions()))
+        local _, _, skillLevel = GetProfessionInfo(profIdx)
+        
+        if profIdx then
+            if profIdx == blackSmithingIdx and skillLevel > blackSmithingLevelRequirement then
+                return true
+            end
+        end
+
+    end
+    
+    return false
+end
+
+-- extract stats from tooltip
+local function GetItemStatsFromTooltip(slotId)
+    local itemLink = GetInventoryItemLink("player", slotId)
+    if not itemLink then return nil end
+
+    local itemStats = GetItemStats(itemLink)
+
+    local sockets = {}
+    local equippedGems = {}
+    local bonus = {}
+    local itemStats = GetItemStats(itemLink)
+    local stats = {}
+
+    local seen = {}  -- keep track of already saved stats
+
+    scanner:ClearLines()
+    scanner:SetInventoryItem("player", slotId)
+
+    for i = 2, scanner:NumLines() do
+        local line = _G["TooltipScannerTooltipTextLeft"..i]
+        if line then
+            local text = line:GetText()
+            if text then
+                -- Case 1: normal stat
+                local amount, stat = text:match("^%+([%d,%.]+)%s(.+)$")
+                if amount and stat and tracked[stat] and not seen[stat] then
+                    if hasKey(itemStats, statlist[stat]) then
+                        table.insert(stats, { stat = statlist[stat], value = CleanNumber(amount) })
+                        seen[stat] = true
+                    end
+                end
+
+                -- Case 2: reforged stat: "+326 Expertise (Reforged from Mastery)"
+                local amount2, stat2, fromStat = text:match("^%+([%d,%.]+)%s(.+)%s%((Reforged from .+)%)$")
+                if amount2 and stat2 and tracked[stat2] then
+                    local from = fromStat:match("Reforged from%s(.+)")
+                    table.insert(stats, {
+                        stat = statlist[stat2],
+                        value = CleanNumber(amount2),
+                        reforgedFrom = statlist[from]
+                    })
+                end
             end
         end
     end
-    
-    return nil, nil
-end
 
-function GigaforgeGetEquippedItemInfo()
-    local tooltip = CreateFrame("GameTooltip", "SocketScannerTooltip", nil, "GameTooltipTemplate")
-    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    --equipped gems
+    for gemidx = 1, 3 do
+        gem = C_Item.GetItemGem(GetInventoryItemLink("player", slot), gemidx)
+        if gem then
+            table.insert(equippedGems, gem)
+        end
+    end
     
-    cacheEquippedItems()
+    -- getting all gems in the item
+    for statName, statValue in pairs(itemStats) do
+        for color, socket in pairs(socketColorList) do
+            if socket == statName then
+                for i = 1, statValue do
+                    table.insert(sockets, color)
+                end
+            end
+        end
+    end
+
+    -- adding prismatic sockets
+    if slotId == 6 then
+        table.insert(sockets, "prismatic")
+    end
+
+    if hasBlackSmithingRequired() then
+        if slotId == 10 or slotId == 9 then
+            table.insert(sockets, "prismatic")
+        end
+    end
 
     local itemData = {}
-    
-    for slot = 1, 19 do
-        local itemLink = GetInventoryItemLink("player", slot)
-        
-        if itemLink then
-            tooltip:ClearLines()
-            tooltip:SetInventoryItem("player", slot)
-            
-            local sockets = {}
-            local bonus = {}
-            local itemStats = GetItemStats(itemLink)
-            local stats = {}
 
-            print(slot)
-            for k, v in pairs(itemStats) do
-                print(k, v)
-            end
-            print()
-            
-            for statName, statValue in pairs(itemStats) do
-                for _, value in pairs(statlist) do
-                    if value == statName then
-                        --stat = {}
-                        --stat[statName] = statValue
-                        --table.insert(stats, stat)
-                        stats[statName] = statValue
-                    end
-                end
-                for color, socket in pairs(socketColorList) do
-                    if socket == statName then
-                        for i = 1, statValue do
-                            table.insert(sockets, color)
-                        end
-                    end
-                end
-            end
-            
-        --[[     for i = 1, tooltip:NumLines() do
-                local line = _G["SocketScannerTooltipTextLeft" .. i]:GetText()
-                if line then
-                    
-                    if line:find("Red Socket") then
-                        table.insert(sockets, "red")
-                    elseif line:find("Blue Socket") then
-                        table.insert(sockets, "blue")
-                    elseif line:find("Yellow Socket") then
-                        table.insert(sockets, "yellow")
-                    elseif line:find("Prismatic Socket") then
-                        table.insert(sockets, "prismatic")
-                    end
-                    
-                    if line:find("Socket Bonus") then
-                        local statText = line:match("Socket Bonus: (.+)")
-                        if statText then
-                            local token, value = ParseStatLine(statText)
-                            if token and value then
-                                bonus[token] = value
-                            end
-                        end
-                    end
-                end
-            end ]]
-            table.insert(itemData, {
-                    slotID = slot,
-                    locked = false,
-                    stats = stats,
-                    sockets = sockets,
-                    bonus = bonus
-            })
-        end
-    end
-    
+    table.insert(itemData, {
+            slotID = slotId,
+            locked = false,
+            stats = stats,
+            sockets = sockets,
+            equippedGems = equippedGems,
+            bonus = bonus
+        })
+
     return itemData
-    
 end
-
 
 local function escape_str(s)
     return s:gsub('[%c\\"]', function(c)
@@ -205,12 +212,67 @@ local function encode_json(val)
     end
 end
 
-local items = GigaforgeGetEquippedItemInfo()
-data['items'] = items
+-- caching all items so they can be scanned
+local function cacheEquippedItems()
+    for slot = 1, 19 do
+        local a = GetInventoryItemID("player", slot)
+        if a then
+            local b = GetItemInfo(a)
+        end
+    end
+end
 
-local encoded = encode_json(data)
+
+
+local function generate_character_data()
+    cacheEquippedItems()
+
+    local data = {}
+    
+    local _, _, class = UnitClass("player")
+    local specIndex = C_SpecializationInfo.GetSpecialization()
+    local specID = C_SpecializationInfo.GetSpecializationInfo(specIndex)
+    local _, _, race = UnitRace("player")
+
+    data['specID'] = specID
+    data['class'] = class
+    data['race'] = race
+    data['stats'] = {
+        ['ITEM_MOD_DODGE_RATING'] = GetCombatRating(CR_DODGE),
+        ['ITEM_MOD_PARRY_RATING'] = GetCombatRating(CR_PARRY),
+        ['ITEM_MOD_HIT_RATING'] = GetCombatRating(CR_HIT_MELEE),
+        ['ITEM_MOD_EXPERTISE_RATING'] = GetCombatRating(CR_EXPERTISE),
+        ['ITEM_MOD_HASTE_RATING'] = GetCombatRating(CR_HASTE_MELEE),
+        ['ITEM_MOD_MASTERY_RATING_SHORT'] = GetCombatRating(CR_MASTERY),
+        ['ITEM_MOD_CRIT_RATING'] = GetCombatRating(CR_CRIT_MELEE),
+        ['ITEM_MOD_STRENGTH_SHORT'] = UnitStat("player", 1),
+        ['ITEM_MOD_AGILITY_SHORT'] = UnitStat("player", 2),
+        ['ITEM_MOD_STAMINA_SHORT'] = UnitStat("player", 3),
+        ['ITEM_MOD_INTELLECT_SHORT'] = UnitStat("player", 4),
+        ['ITEM_MOD_SPIRIT_SHORT'] = UnitStat("player", 5),
+    }
+    local allStats = {}
+
+    for _, slotName in ipairs(slots) do
+        local slotId = GetInventorySlotInfo(slotName)
+        local itemStats = GetItemStatsFromTooltip(slotId)
+        if itemStats and #itemStats > 0 then
+            allStats[slotName] = itemStats
+        end
+    end
+    
+    data['items'] = allStats
+    
+    local encoded = encode_json(data)
+    
+    return encoded
+end
+
+
+
 
 -- Create the popup frame
+--local infoFrame = CreateFrame("Frame", "GigaforgeFrame", UIParent, "BackdropTemplate")
 local infoFrame = CreateFrame("Frame", "GigaforgeFrame", UIParent, "BackdropTemplate")
 infoFrame:SetSize(400, 300)
 infoFrame:SetPoint("CENTER")
@@ -222,17 +284,21 @@ infoFrame:SetBackdrop({
 })
 infoFrame:Hide()
 
--- Create the editable text box
-local editBox = CreateFrame("EditBox", nil, infoFrame, "InputBoxTemplate")
+local scrollFrame = CreateFrame("ScrollFrame", nil, infoFrame, "UIPanelScrollFrameTemplate")
+scrollFrame:SetSize(350, 250)
+scrollFrame:SetPoint("CENTER")
+
+local editBox = CreateFrame("EditBox", nil, infoFrame)
+editBox:SetFontObject(ChatFontNormal)
 editBox:SetMultiLine(true)
-editBox:SetSize(360, 240)
-editBox:SetPoint("CENTER")
-editBox:SetAutoFocus(true)
+editBox:SetWidth(400)
+scrollFrame:SetScrollChild(editBox)
 editBox:SetScript("OnEscapePressed", function() infoFrame:Hide() end)
+editBox:SetAutoFocus(true)
 
 -- Auto-highlight text when shown
 infoFrame:SetScript("OnShow", function()
-    local text = encoded
+    local text = generate_character_data()
     editBox:SetText(text)
     editBox:HighlightText()
 end)

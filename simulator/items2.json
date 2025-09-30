@@ -1,0 +1,419 @@
+{
+    "items": {
+        "ChestSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 939
+                    },
+                    {
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "value": 588
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "yellow",
+                    "yellow"
+                ],
+                "slotID": 5,
+                "bonus": []
+            }
+        ],
+        "WristSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 311
+                    },
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 517
+                    },
+                    {
+                        "value": 206,
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "reforgedFrom": "ITEM_MOD_DODGE_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 9,
+                "bonus": []
+            }
+        ],
+        "Trinket1Slot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 1241
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 14,
+                "bonus": []
+            }
+        ],
+        "BackSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 287
+                    },
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 497
+                    },
+                    {
+                        "value": 190,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_DODGE_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 15,
+                "bonus": []
+            }
+        ],
+        "Trinket0Slot": [
+            {
+                "stats": [
+                    {
+                        "value": 525,
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "reforgedFrom": "ITEM_MOD_MASTERY_RATING_SHORT"
+                    },
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 788
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 13,
+                "bonus": []
+            }
+        ],
+        "MainHandSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_CRIT_RATING",
+                        "value": 879
+                    },
+                    {
+                        "value": 351,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_MASTERY_RATING_SHORT"
+                    },
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 528
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 16,
+                "bonus": []
+            }
+        ],
+        "HeadSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 1087
+                    },
+                    {
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "value": 431
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "blue"
+                ],
+                "slotID": 1,
+                "bonus": []
+            }
+        ],
+        "Finger0Slot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 441
+                    },
+                    {
+                        "value": 293,
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "reforgedFrom": "ITEM_MOD_PARRY_RATING"
+                    },
+                    {
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "value": 372
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 11,
+                "bonus": []
+            }
+        ],
+        "LegsSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 488
+                    },
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 777
+                    },
+                    {
+                        "value": 324,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_DODGE_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "red",
+                    "blue"
+                ],
+                "slotID": 7,
+                "bonus": []
+            }
+        ],
+        "FeetSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 624
+                    },
+                    {
+                        "value": 265,
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "reforgedFrom": "ITEM_MOD_MASTERY_RATING_SHORT"
+                    },
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 398
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "yellow"
+                ],
+                "slotID": 8,
+                "bonus": []
+            }
+        ],
+        "WaistSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 576
+                    },
+                    {
+                        "value": 182,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_MASTERY_RATING_SHORT"
+                    },
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 274
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "yellow",
+                    "blue",
+                    "prismatic"
+                ],
+                "slotID": 6,
+                "bonus": []
+            }
+        ],
+        "HandsSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 588
+                    },
+                    {
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "value": 496
+                    },
+                    {
+                        "value": 391,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_DODGE_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 10,
+                "bonus": []
+            }
+        ],
+        "NeckSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 314
+                    },
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 522
+                    },
+                    {
+                        "value": 208,
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "reforgedFrom": "ITEM_MOD_DODGE_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 2,
+                "bonus": []
+            }
+        ],
+        "ShoulderSlot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_PARRY_RATING",
+                        "value": 877
+                    },
+                    {
+                        "stat": "ITEM_MOD_HIT_RATING",
+                        "value": 255
+                    },
+                    {
+                        "value": 170,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_HIT_RATING"
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [
+                    "red"
+                ],
+                "slotID": 3,
+                "bonus": []
+            }
+        ],
+        "Finger1Slot": [
+            {
+                "stats": [
+                    {
+                        "stat": "ITEM_MOD_DODGE_RATING",
+                        "value": 525
+                    },
+                    {
+                        "value": 171,
+                        "stat": "ITEM_MOD_EXPERTISE_RATING",
+                        "reforgedFrom": "ITEM_MOD_MASTERY_RATING_SHORT"
+                    },
+                    {
+                        "stat": "ITEM_MOD_MASTERY_RATING_SHORT",
+                        "value": 258
+                    }
+                ],
+                "equippedGems": [
+                    "Reverberating Primal Diamond",
+                    "Retaliating Imperial Amethyst"
+                ],
+                "locked": false,
+                "sockets": [],
+                "slotID": 12,
+                "bonus": []
+            }
+        ]
+    },
+    "race": 10,
+    "class": 6,
+    "stats": {
+        "ITEM_MOD_DODGE_RATING": 4803,
+        "ITEM_MOD_STRENGTH_SHORT": 11862,
+        "ITEM_MOD_MASTERY_RATING_SHORT": 3627,
+        "ITEM_MOD_PARRY_RATING": 8647,
+        "ITEM_MOD_SPIRIT_SHORT": 65,
+        "ITEM_MOD_INTELLECT_SHORT": 41,
+        "ITEM_MOD_AGILITY_SHORT": 133,
+        "ITEM_MOD_STAMINA_SHORT": 29224,
+        "ITEM_MOD_CRIT_RATING": 879,
+        "ITEM_MOD_HASTE_RATING": 0,
+        "ITEM_MOD_EXPERTISE_RATING": 2752,
+        "ITEM_MOD_HIT_RATING": 2706
+    },
+    "specID": 250
+}
