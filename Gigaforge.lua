@@ -139,8 +139,16 @@ local function GetItemStatsFromTooltip(slotId)
     --equipped gems
     for gemidx = 1, 3 do
         gem = C_Item.GetItemGem(GetInventoryItemLink("player", slotId), gemidx)
+        --print(gem)
+        if not gem then
+            print('neger')
+        end
+
+
         if gem then
             table.insert(equippedGems, gem)
+        else 
+            table.insert(equippedGems, "null")
         end
     end
     
