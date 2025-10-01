@@ -2,6 +2,8 @@
 local scanner = CreateFrame("GameTooltip", "TooltipScannerTooltip", nil, "GameTooltipTemplate")
 scanner:SetOwner(WorldFrame, "ANCHOR_NONE")
 
+
+
 -- slots to check
 local slots = {
     "HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot",
@@ -97,7 +99,17 @@ local function GetItemStatsFromTooltip(slotId)
                 local amount, stat = text:match("^%+([%d,%.]+)%s(.+)$")
                 if amount and stat and tracked[stat] and not seen[stat] then
                     if hasKey(itemStats, statlist[stat]) then
-                        table.insert(stats, { stat = statlist[stat], value = CleanNumber(amount) })
+                        -- saving data in new format
+                        --table.insert(stats, { stat = statlist[stat], value = CleanNumber(amount) })
+                        
+                        -- old format
+                        if hasKey(stats, statlist[stat]) then
+                            stats[statlist[stat]] = stats[statlist[stat]] + CleanNumber(amount)
+                        else
+                            stats[statlist[stat]] = CleanNumber(amount)
+                        end
+
+                        -- 
                         seen[stat] = true
                     end
                 end
@@ -106,11 +118,19 @@ local function GetItemStatsFromTooltip(slotId)
                 local amount2, stat2, fromStat = text:match("^%+([%d,%.]+)%s(.+)%s%((Reforged from .+)%)$")
                 if amount2 and stat2 and tracked[stat2] then
                     local from = fromStat:match("Reforged from%s(.+)")
-                    table.insert(stats, {
-                        stat = statlist[stat2],
-                        value = CleanNumber(amount2),
-                        reforgedFrom = statlist[from]
-                    })
+                    
+                    if hasKey(stats, statlist[from]) then
+                        stats[statlist[from]] = stats[statlist[from]] + CleanNumber(amount2)
+                    else
+                        stats[statlist[from]] = CleanNumber(amount2)
+                    end
+
+                    -- this saves the data on the new format
+                    --table.insert(stats, {
+                        --stat = statlist[stat2],
+                        --value = CleanNumber(amount2),
+                        --reforgedFrom = statlist[from]
+                    --})
                 end
             end
         end
@@ -118,7 +138,7 @@ local function GetItemStatsFromTooltip(slotId)
 
     --equipped gems
     for gemidx = 1, 3 do
-        gem = C_Item.GetItemGem(GetInventoryItemLink("player", slot), gemidx)
+        gem = C_Item.GetItemGem(GetInventoryItemLink("player", slotId), gemidx)
         if gem then
             table.insert(equippedGems, gem)
         end
@@ -146,16 +166,34 @@ local function GetItemStatsFromTooltip(slotId)
         end
     end
 
-    local itemData = {}
+    -- return as old format
+    if true then
+        local itemData = {
+                slotID = slotId,
+                locked = false,
+                stats = stats,
+                sockets = sockets,
+                equippedGems = equippedGems,
+                bonus = bonus
+            }
+        --print(itemData)
 
-    table.insert(itemData, {
-            slotID = slotId,
-            locked = false,
-            stats = stats,
-            sockets = sockets,
-            equippedGems = equippedGems,
-            bonus = bonus
-        })
+        return itemData
+    end
+
+    -- return as new format
+    if false then
+        local itemData = {}
+        table.insert(itemData, {
+                slotID = slotId,
+                locked = false,
+                stats = stats,
+                sockets = sockets,
+                equippedGems = equippedGems,
+                bonus = bonus
+            })
+            return itemData
+    end
 
     return itemData
 end
@@ -256,8 +294,11 @@ local function generate_character_data()
     for _, slotName in ipairs(slots) do
         local slotId = GetInventorySlotInfo(slotName)
         local itemStats = GetItemStatsFromTooltip(slotId)
-        if itemStats and #itemStats > 0 then
-            allStats[slotName] = itemStats
+        if itemStats then
+            table.insert(allStats, itemStats)
+
+            -- append to table in new data format
+            -- allStats[slotName] = itemStats
         end
     end
     
